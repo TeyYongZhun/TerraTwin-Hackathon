@@ -1,0 +1,105 @@
+/* Global UI state (Zustand). Analytics are derived from this state in hooks — nothing heavy is stored here. */
+import { create } from 'zustand';
+import { useShallow } from 'zustand/react/shallow';
+import type { SiteKind } from '../data/sites';
+import { type Assumptions, DEFAULT_ASSUMPTIONS } from '../data/assumptions';
+import { DEFAULT_WEIGHTS, type Weights } from '../lib/solar/evaluate';
+
+export type Module = 'solar' | 'ecospec' | 'dashboard';
+export type MapStyleId = 'satellite' | 'night' | 'blueprint';
+export interface SunState { month: number; day: number; hour: number }
+export interface Layers { heat: boolean; shadows: boolean; panels: boolean; labels: boolean; canopies: boolean }
+/** Quantities carried from a SolarTwin car-park canopy design into EcoSpec AI. */
+export interface Handoff { siteId: string; siteName: string; paverAreaM2: number; footingConcreteM3: number; columns: number; steelTonnes: number }
+/** A material choice confirmed in EcoSpec AI, counted on the Net-Zero dashboard. */
+export interface MaterialPick { useCaseId: string; useCase: string; product: string; supplier: string; quantity: number; unit: string; tco2: number; tco2Saved: number; cost: number; premium: number }
+export interface Toast { id: number; text: string; tone?: 'ok' | 'info' | 'warn' }
+
+interface AppState {
+  started: boolean;
+  module: Module;
+  mapStyle: MapStyleId;
+  tab: SiteKind;
+  listQuery: string;
+  hideBlockers: boolean;
+  selectedId: string | null;
+  hoverId: string | null;
+  weights: Weights;
+  assumptions: Assumptions;
+  sun: SunState;
+  playing: boolean;
+  layers: Layers;
+  canopies: string[];
+  portfolio: string[];
+  creamPool: string[];
+  handoff: Handoff | null;
+  picks: MaterialPick[];
+  ai: { ai: boolean; model: string } | null;
+  copilotOpen: boolean;
+  demoStep: number | null;
+  assumptionsOpen: boolean;
+  toasts: Toast[];
+  set: (p: Partial<AppState>) => void;
+  select: (id: string | null, kind?: SiteKind) => void;
+  setWeight: (k: keyof Weights, v: number) => void;
+  setAssumption: (k: keyof Assumptions, v: number) => void;
+  setSun: (p: Partial<SunState>) => void;
+  toggleLayer: (k: keyof Layers, v?: boolean) => void;
+  toggleIn: (key: 'canopies' | 'portfolio' | 'creamPool', id: string, on?: boolean) => void;
+  addPick: (p: MaterialPick) => void;
+  toast: (text: string, tone?: Toast['tone']) => void;
+}
+
+const now = new Date();
+let toastId = 0;
+
+export const useApp = create<AppState>((set, get) => ({
+  started: false,
+  module: 'solar',
+  mapStyle: 'satellite',
+  tab: 'roof',
+  listQuery: '',
+  hideBlockers: false,
+  selectedId: null,
+  hoverId: null,
+  weights: { ...DEFAULT_WEIGHTS },
+  assumptions: { ...DEFAULT_ASSUMPTIONS },
+  sun: { month: now.getMonth() + 1, day: now.getDate(), hour: 10.5 },
+  playing: false,
+  layers: { heat: true, shadows: true, panels: true, labels: true, canopies: true },
+  canopies: [],
+  portfolio: [],
+  creamPool: [],
+  handoff: null,
+  picks: [],
+  ai: null,
+  copilotOpen: false,
+  demoStep: null,
+  assumptionsOpen: false,
+  toasts: [],
+  set: (p) => set(p),
+  select: (id, kind) => set(kind ? { selectedId: id, tab: kind } : { selectedId: id }),
+  setWeight: (k, v) => set({ weights: { ...get().weights, [k]: v } }),
+  setAssumption: (k, v) => set({ assumptions: { ...get().assumptions, [k]: v } }),
+  setSun: (p) => set({ sun: { ...get().sun, ...p } }),
+  toggleLayer: (k, v) => set({ layers: { ...get().layers, [k]: v ?? !get().layers[k] } }),
+  toggleIn: (key, id, on) => {
+    const cur = get()[key], has = cur.includes(id), want = on ?? !has;
+    if (want !== has) set({ [key]: want ? [...cur, id] : cur.filter((x) => x !== id) } as Partial<AppState>);
+  },
+  addPick: (p) => set({ picks: [...get().picks.filter((x) => x.useCaseId !== p.useCaseId), p] }),
+  toast: (text, tone = 'ok') => {
+    const t = { id: ++toastId, text, tone };
+    set({ toasts: [...get().toasts, t] });
+    setTimeout(() => set({ toasts: get().toasts.filter((x) => x.id !== t.id) }), 3800);
+  },
+}));
+
+/** Subscribe to just these keys (shallow-compared), so a component doesn't re-render on every sun-playback frame. */
+export function useAppPick<K extends keyof AppState>(...keys: K[]): Pick<AppState, K> {
+  return useApp(useShallow((s) => {
+    const o = {} as Pick<AppState, K>;
+    for (const k of keys) o[k] = s[k];
+    return o;
+  }));
+}

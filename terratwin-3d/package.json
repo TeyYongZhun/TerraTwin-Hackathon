@@ -1,0 +1,52 @@
+{
+  "name": "terratwin-3d",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "TerraTwin AI 3D — Net-Zero Township Copilot for City of Elmina (SolarTwin + EcoSpec AI). Hackathon prototype.",
+  "scripts": {
+    "dev": "concurrently -k -n api,web -c cyan,green \"npm:dev:api\" \"npm:dev:web\"",
+    "dev:web": "vite",
+    "dev:api": "tsx watch server/index.ts",
+    "build": "vite build",
+    "start": "cross-env NODE_ENV=production tsx server/index.ts",
+    "test": "vitest run",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "fetch:osm": "node scripts/fetch-osm.mjs",
+    "make:pdfs": "tsx scripts/make-sample-pdfs.ts",
+    "precompute": "tsx scripts/precompute-extractions.ts",
+    "precompute:solar": "tsx scripts/precompute-solar.ts"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.135.0",
+    "@turf/turf": "^7.4.0",
+    "dotenv": "^18.0.8",
+    "express": "^5.3.0",
+    "lucide-react": "^1.60.0",
+    "maplibre-gl": "^6.15.0",
+    "motion": "^14.4.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "recharts": "^3.10.1",
+    "suncalc": "^2.1.1",
+    "zod": "^4.6.7",
+    "zustand": "^5.0.15"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.3.3",
+    "@types/express": "^5.0.6",
+    "@types/node": "^26.6.5",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@types/suncalc": "^1.9.2",
+    "@vitejs/plugin-react": "^6.1.2",
+    "concurrently": "^10.0.6",
+    "cross-env": "^10.1.0",
+    "pdf-lib": "^1.17.1",
+    "tailwindcss": "^4.3.3",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.4",
+    "vitest": "^5.0.5"
+  }
+}

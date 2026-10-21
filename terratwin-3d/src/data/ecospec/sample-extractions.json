@@ -1,0 +1,885 @@
+{
+ "6e5b3e1bae25c03d0bfcd016dced91bffeea22c97ff6e711c34608a4f85f5209": {
+  "fileName": "concrete-verdemix-ggbs50.pdf",
+  "useCaseId": "concrete-c30",
+  "source": "sample-pack ground truth",
+  "extraction": {
+   "product_name": "VerdeMix GGBS-50 Grade C30",
+   "supplier": "Lestari Readymix Sdn Bhd",
+   "material_type": "ready_mix_concrete",
+   "document_kinds": [
+    "datasheet",
+    "epd"
+   ],
+   "specs": {
+    "compressive_strength_mpa": {
+     "value": 34,
+     "unit": "MPa",
+     "quote": "Characteristic cube strength (28 days): 34 MPa",
+     "page": 1
+    },
+    "water_cement_ratio": {
+     "value": 0.48,
+     "unit": "",
+     "quote": "Maximum free water/binder ratio: 0.48",
+     "page": 1
+    },
+    "water_absorption_pct": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
+    },
+    "slip_resistance_ptv": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
+    },
+    "thickness_mm": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
+    },
+    "mass_per_m2_kg": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
+    },
+    "density_kg_m3": {
+     "value": 2380,
+     "unit": "kg/m3",
+     "quote": "Fresh density: 2380 kg/m3",
+     "page": 1
+    },
+    "recycled_content_pct": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
+    }
+   },
+   "price": {
+    "value": 318,
+    "unit": "RM/m3",
+    "quote": "Supply price (Klang Valley, ex-plant): RM 318 per m3",
+    "page": 1
+   },
+   "warranty_years": {
+    "value": null,
+    "unit": null,
+    "quote": null,
+    "page": null
+   },
+   "gwp": {
+    "value": 182,
+    "declared_unit": "kgCO2e/m3",
+    "lifecycle_stages": "A1-A3",
+    "basis": "epd",
+    "quote": "GWP-total (A1-A3): 182 kgCO2e per m3",
+    "page": 2
+   },
+   "epd": {
+    "present": true,
+    "registration_number": "EPD-MY-GGBS-0421",
+    "programme_operator": "Malaysia Green Building EPD Programme (fictitious)",
+    "standards": [
+     "ISO 14025",
+     "EN 15804+A2"
+    ],
+    "third_party_verified": true,
+    "valid_until": "2029-03-31",
+    "quote": "EPD registration no.: EPD-MY-GGBS-0421",
+    "page": 2
+   },
+   "certifications": [],
+   "claims": [
+    {
+     "claim": "Up to 43% lower embodied carbon than OPC C30",
+     "quote": "Up to 43% lower embodied carbon than a conventional OPC C30 mix (see EPD on page 2).",
+     "page": 1,
+     "cited_evidence": "EPD-MY-GGBS-0421"
+    }
+   ],
+   "notes": []
+  }
+ },
+ "b16d7daaa83b586e3e78aebffdf63e0d32b85344b39c633d968ccef5dd761842": {
+  "fileName": "concrete-ecocrete-40r.pdf",
+  "useCaseId": "concrete-c30",
+  "source": "sample-pack ground truth",
+  "extraction": {
+   "product_name": "EcoCrete 40R Grade C30",
+   "supplier": "Hijau Konkrit Trading",
+   "material_type": "ready_mix_concrete",
+   "document_kinds": [
+    "brochure"
+   ],
+   "specs": {
+    "compressive_strength_mpa": {
+     "value": 32,
+     "unit": "MPa",
+     "quote": "28-day cube strength: 32 MPa",
+     "page": 1
+    },
+    "water_cement_ratio": {
+     "value": 0.5,
+     "unit": "",
+     "quote": "Water/cement ratio: 0.50",
+     "page": 1
+    },
+    "water_absorption_pct": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
+    },
+    "slip_resistance_ptv": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
+    },
+    "thickness_mm": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
+    },
+    "mass_per_m2_kg": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
+    },
+    "density_kg_m3": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
+    },
+    "recycled_content_pct": {
+     "value": 40,
+     "unit": "%",
+     "quote": "Recycled content: 40% (recycled concrete aggregate)",
+     "page": 1
+    }
+   },
+   "price": {
+    "value": 305,
+    "unit": "RM/m3",
+    "quote": "Price: RM 305 per m3",
+    "page": 1
+   },
+   "warranty_years": {
+    "value": null,
+    "unit": null,
+    "quote": null,
+    "page": null
+   },
+   "gwp": {
+    "value": 190,
+    "declared_unit": "kgCO2e/m3",
+    "lifecycle_stages": null,
+    "basis": "self_declared",
+    "quote": "Carbon footprint: approx. 190 kgCO2e per m3 (internal estimate)",
+    "page": 1
+   },
+   "epd": {
+    "present": false,
+    "registration_number": null,
+    "programme_operator": null,
+    "standards": [],
+    "third_party_verified": null,
+    "valid_until": null,
+    "quote": null,
+    "page": null
+   },
+   "certifications": [],
+   "claims": [
+    {
+     "claim": "Eco-friendly, 40% recycled content",
+     "quote": "ECO-FRIENDLY concrete with 40% recycled content!",
+     "page": 1,
+     "cited_evidence": null
+    },
+    {
+     "claim": "Up to 35% lower carbon footprint",
+     "quote": "Up to 35% lower carbon footprint - the green choice for every project.",
+     "page": 1,
+     "cited_evidence": null
+    }
+   ],
+   "notes": [
+    "No EPD or eco-label certificate is provided; the carbon figure is an internal estimate.",
+    "Certificates and test reports are only \"available on request\"."
+   ]
+  }
+ },
+ "b8e833d927ede70ba498bb62a4325d102b28700f0a072d6ff070ef56db66014e": {
+  "fileName": "concrete-standardmix-opc.pdf",
+  "useCaseId": "concrete-c30",
+  "source": "sample-pack ground truth",
+  "extraction": {
+   "product_name": "StandardMix OPC Grade C30",
+   "supplier": "Prima Ready-Mix Sdn Bhd",
+   "material_type": "ready_mix_concrete",
+   "document_kinds": [
+    "datasheet",
+    "epd"
+   ],
+   "specs": {
+    "compressive_strength_mpa": {
+     "value": 35,
+     "unit": "MPa",
+     "quote": "Characteristic cube strength (28 days): 35 MPa",
+     "page": 1
+    },
+    "water_cement_ratio": {
+     "value": 0.5,
+     "unit": "",
+     "quote": "Maximum free water/cement ratio: 0.50",
+     "page": 1
+    },
+    "water_absorption_pct": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
+    },
+    "slip_resistance_ptv": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
+    },
+    "thickness_mm": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
+    },
+    "mass_per_m2_kg": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
+    },
+    "density_kg_m3": {
+     "value": 2400,
+     "unit": "kg/m3",
+     "quote": "Fresh density: 2400 kg/m3",
+     "page": 1
+    },
+    "recycled_content_pct": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
+    }
+   },
+   "price": {
+    "value": 278,
+    "unit": "RM/m3",
+    "quote": "Price: RM 278 per m3",
+    "page": 1
+   },
+   "warranty_years": {
+    "value": null,
+    "unit": null,
+    "quote": null,
+    "page": null
+   },
+   "gwp": {
+    "value": 318,
+    "declared_unit": "kgCO2e/m3",
+    "lifecycle_stages": "A1-A3",
+    "basis": "epd",
+    "quote": "GWP-total (A1-A3): 318 kgCO2e per m3",
+    "page": 2
+   },
+   "epd": {
+    "present": true,
+    "registration_number": "EPD-MY-SECTOR-RMC-0007",
+    "programme_operator": "Malaysia Green Building EPD Programme (fictitious)",
+    "standards": [
+     "ISO 14025",
+     "EN 15804+A2"
+    ],
+    "third_party_verified": true,
+    "valid_until": "2028-12-31",
+    "quote": "EPD registration no.: EPD-MY-SECTOR-RMC-0007",
+    "page": 2
+   },
+   "certifications": [],
+   "claims": [],
+   "notes": [
+    "The EPD is an industry-average sector EPD, not specific to this product."
+   ]
+  }
+ },
+ "6f091fc659b7b7a4793bb0f722a4802001d056f4cece213402239b7081f3acaa": {
+  "fileName": "concrete-lowcarb-c28.pdf",
+  "useCaseId": "concrete-c30",
+  "source": "sample-pack ground truth",
+  "extraction": {
+   "product_name": "LowCarb Blend C28/30",
+   "supplier": "Sinar Bina Concrete Sdn Bhd",
+   "material_type": "ready_mix_concrete",
+   "document_kinds": [
+    "datasheet",
+    "certificate"
+   ],
+   "specs": {
+    "compressive_strength_mpa": {
+     "value": 28,
+     "unit": "MPa",
+     "quote": "28-day cube strength: 28 MPa",
+     "page": 1
+    },
+    "water_cement_ratio": {
+     "value": 0.55,
+     "unit": "",
+     "quote": "Maximum water/cement ratio: 0.55",
+     "page": 1
+    },
+    "water_absorption_pct": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
+    },
+    "slip_resistance_ptv": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
+    },
+    "thickness_mm": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
+    },
+    "mass_per_m2_kg": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
+    },
+    "density_kg_m3": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
+    },
+    "recycled_content_pct": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
+    }
+   },
+   "price": {
+    "value": 289,
+    "unit": "RM/m3",
+    "quote": "Price: RM 289 per m3",
+    "page": 1
+   },
+   "warranty_years": {
+    "value": null,
+    "unit": null,
+    "quote": null,
+    "page": null
+   },
+   "gwp": {
+    "value": 205,
+    "declared_unit": "kgCO2e/m3",
+    "lifecycle_stages": "A1-A3",
+    "basis": "self_declared",
+    "quote": "GWP (A1-A3): 205 kgCO2e/m3",
+    "page": 1
+   },
+   "epd": {
+    "present": false,
+    "registration_number": null,
+    "programme_operator": null,
+    "standards": [],
+    "third_party_verified": null,
+    "valid_until": null,
+    "quote": null,
+    "page": null
+   },
+   "certifications": [
+    {
+     "scheme": "SIRIM_ECO_LABEL",
+     "name": "SIRIM Eco-Labelling Scheme",
+     "certificate_number": "ECO-SL-2291",
+     "valid_until": "2024-06-30",
+     "quote": "Valid until: 2024-06-30",
+     "page": 2
+    }
+   ],
+   "claims": [
+    {
+     "claim": "Certified green (SIRIM Eco-Label)",
+     "quote": "Certified green: SIRIM Eco-Label certificate no. ECO-SL-2291.",
+     "page": 1,
+     "cited_evidence": "SIRIM Eco-Label ECO-SL-2291"
+    }
+   ],
+   "notes": [
+    "Strength class C28/30 is below the specified C30 cube strength.",
+    "The SIRIM Eco-Label certificate expired on 2024-06-30.",
+    "No EPD is provided for the GWP figure."
+   ]
+  }
+ },
+ "d663820a7c6c334aede4835abc5b0b51672fcd6d459b59412132be2a64a7d026": {
+  "fileName": "paver-repave-r30.pdf",
+  "useCaseId": "paver-80",
+  "source": "sample-pack ground truth",
+  "extraction": {
+   "product_name": "RePave R30 interlocking paver, 80 mm",
+   "supplier": "Taman Paving Industries",
+   "material_type": "interlocking_paver",
+   "document_kinds": [
+    "datasheet"
+   ],
+   "specs": {
+    "compressive_strength_mpa": {
+     "value": 50,
+     "unit": "MPa",
+     "quote": "Compressive strength (mean): 50 MPa",
+     "page": 1
+    },
+    "water_cement_ratio": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
+    },
+    "water_absorption_pct": {
+     "value": 5.2,
+     "unit": "%",
+     "quote": "Water absorption: 5.2%",
+     "page": 1
+    },
+    "slip_resistance_ptv": {
+     "value": 52,
+     "unit": "PTV",
+     "quote": "Slip resistance (wet pendulum): 52 PTV",
+     "page": 1
+    },
+    "thickness_mm": {
+     "value": 80,
+     "unit": "mm",
+     "quote": "Thickness: 80 mm",
+     "page": 1
+    },
+    "mass_per_m2_kg": {
+     "value": 178,
+     "unit": "kg/m2",
+     "quote": "Mass per m2: 178 kg",
+     "page": 1
+    },
+    "density_kg_m3": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
+    },
+    "recycled_content_pct": {
+     "value": 30,
+     "unit": "%",
+     "quote": "Recycled aggregate content: 30%",
+     "page": 1
+    }
+   },
+   "price": {
+    "value": 42,
+    "unit": "RM/m2",
+    "quote": "Price: RM 42 per m2",
+    "page": 1
+   },
+   "warranty_years": {
+    "value": 10,
+    "unit": "years",
+    "quote": "Warranty: 10 years",
+    "page": 1
+   },
+   "gwp": {
+    "value": 17.5,
+    "declared_unit": "kgCO2e/m2",
+    "lifecycle_stages": "A1-A3",
+    "basis": "self_declared",
+    "quote": "Carbon footprint (manufacturer LCA, A1-A3): 17.5 kgCO2e per m2",
+    "page": 2
+   },
+   "epd": {
+    "present": false,
+    "registration_number": null,
+    "programme_operator": null,
+    "standards": [],
+    "third_party_verified": null,
+    "valid_until": null,
+    "quote": null,
+    "page": null
+   },
+   "certifications": [
+    {
+     "scheme": "MYHIJAU",
+     "name": "MyHIJAU Directory listing",
+     "certificate_number": "MH-P-08812",
+     "valid_until": "2027-08-31",
+     "quote": "MyHIJAU registration: MH-P-08812",
+     "page": 2
+    }
+   ],
+   "claims": [
+    {
+     "claim": "30% recycled aggregate, MyHIJAU listed",
+     "quote": "Made with 30% recycled aggregate - listed in the MyHIJAU Directory.",
+     "page": 2,
+     "cited_evidence": "MyHIJAU MH-P-08812"
+    }
+   ],
+   "notes": [
+    "The carbon footprint comes from the manufacturer's own LCA, not a verified EPD."
+   ]
+  }
+ },
+ "f4fc09a7e34b9e483bfd2ceafc7ec8d6c1ed35b510d7c080aa43773efd284044": {
+  "fileName": "paver-durablock-classic.pdf",
+  "useCaseId": "paver-80",
+  "source": "sample-pack ground truth",
+  "extraction": {
+   "product_name": "DuraBlock Classic interlocking paver",
+   "supplier": "Kota Precast Sdn Bhd",
+   "material_type": "interlocking_paver",
+   "document_kinds": [
+    "datasheet",
+    "epd"
+   ],
+   "specs": {
+    "compressive_strength_mpa": {
+     "value": 55,
+     "unit": "MPa",
+     "quote": "Compressive strength: 55 MPa",
+     "page": 1
+    },
+    "water_cement_ratio": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
+    },
+    "water_absorption_pct": {
+     "value": 4.8,
+     "unit": "%",
+     "quote": "Water absorption: 4.8%",
+     "page": 1
+    },
+    "slip_resistance_ptv": {
+     "value": 48,
+     "unit": "PTV",
+     "quote": "Slip resistance (PTV, wet): 48",
+     "page": 1
+    },
+    "thickness_mm": {
+     "value": 80,
+     "unit": "mm",
+     "quote": "Thickness: 80 mm",
+     "page": 1
+    },
+    "mass_per_m2_kg": {
+     "value": 182,
+     "unit": "kg/m2",
+     "quote": "Mass per m2 laid: 182 kg",
+     "page": 1
+    },
+    "density_kg_m3": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
+    },
+    "recycled_content_pct": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
+    }
+   },
+   "price": {
+    "value": 38,
+    "unit": "RM/m2",
+    "quote": "Price: RM 38 per m2",
+    "page": 1
+   },
+   "warranty_years": {
+    "value": 15,
+    "unit": "years",
+    "quote": "Warranty: 15 years",
+    "page": 1
+   },
+   "gwp": {
+    "value": 112,
+    "declared_unit": "kgCO2e/t",
+    "lifecycle_stages": "A1-A3",
+    "basis": "epd",
+    "quote": "GWP-total (A1-A3): 112 kgCO2e per tonne",
+    "page": 2
+   },
+   "epd": {
+    "present": true,
+    "registration_number": "EPD-MY-PAV-1120",
+    "programme_operator": "Malaysia Green Building EPD Programme (fictitious)",
+    "standards": [
+     "ISO 14025",
+     "EN 15804+A2"
+    ],
+    "third_party_verified": true,
+    "valid_until": "2028-05-31",
+    "quote": "EPD registration no.: EPD-MY-PAV-1120",
+    "page": 2
+   },
+   "certifications": [],
+   "claims": [],
+   "notes": [
+    "GWP is declared per tonne; convert to per m2 using the 182 kg/m2 laid mass."
+   ]
+  }
+ },
+ "072bfaf00beb90e51ebd7c76338f38554082f7f383a902d0b405a78fa03c419d": {
+  "fileName": "paver-greenstep-eco.pdf",
+  "useCaseId": "paver-80",
+  "source": "sample-pack ground truth",
+  "extraction": {
+   "product_name": "GreenStep Eco Paver 80 mm",
+   "supplier": "Alam Hijau Pavers",
+   "material_type": "interlocking_paver",
+   "document_kinds": [
+    "brochure"
+   ],
+   "specs": {
+    "compressive_strength_mpa": {
+     "value": 49,
+     "unit": "MPa",
+     "quote": "Compressive strength: 49 MPa",
+     "page": 1
+    },
+    "water_cement_ratio": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
+    },
+    "water_absorption_pct": {
+     "value": 5.8,
+     "unit": "%",
+     "quote": "Water absorption: 5.8%",
+     "page": 1
+    },
+    "slip_resistance_ptv": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
+    },
+    "thickness_mm": {
+     "value": 80,
+     "unit": "mm",
+     "quote": "Thickness: 80 mm",
+     "page": 1
+    },
+    "mass_per_m2_kg": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
+    },
+    "density_kg_m3": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
+    },
+    "recycled_content_pct": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
+    }
+   },
+   "price": {
+    "value": 46,
+    "unit": "RM/m2",
+    "quote": "Price: RM 46 per m2",
+    "page": 1
+   },
+   "warranty_years": {
+    "value": null,
+    "unit": null,
+    "quote": null,
+    "page": null
+   },
+   "gwp": {
+    "value": 14,
+    "declared_unit": "kgCO2e/m2",
+    "lifecycle_stages": null,
+    "basis": "self_declared",
+    "quote": "Carbon footprint: 14 kgCO2e per m2 (before offsets)",
+    "page": 1
+   },
+   "epd": {
+    "present": false,
+    "registration_number": null,
+    "programme_operator": null,
+    "standards": [],
+    "third_party_verified": null,
+    "valid_until": null,
+    "quote": null,
+    "page": null
+   },
+   "certifications": [],
+   "claims": [
+    {
+     "claim": "Carbon-neutral paver",
+     "quote": "The world's first CARBON-NEUTRAL paver!",
+     "page": 1,
+     "cited_evidence": null
+    },
+    {
+     "claim": "100% natural, zero-impact production",
+     "quote": "100% natural, zero-impact production.",
+     "page": 1,
+     "cited_evidence": null
+    }
+   ],
+   "notes": [
+    "No slip-resistance test result; testing is only \"scheduled\".",
+    "Carbon neutrality relies on unspecified purchased offsets with no certificate."
+   ]
+  }
+ },
+ "0854033bcf13e2b3e4ddffb7c835c0b02bc7d7bd75a06926e9600afb7167f27c": {
+  "fileName": "paver-terrablock-ggbs.pdf",
+  "useCaseId": "paver-80",
+  "source": "sample-pack ground truth",
+  "extraction": {
+   "product_name": "TerraBlock GGBS interlocking paver",
+   "supplier": "Seri Precast Sdn Bhd",
+   "material_type": "interlocking_paver",
+   "document_kinds": [
+    "datasheet",
+    "epd",
+    "certificate"
+   ],
+   "specs": {
+    "compressive_strength_mpa": {
+     "value": 52,
+     "unit": "MPa",
+     "quote": "Compressive strength: 52 MPa",
+     "page": 1
+    },
+    "water_cement_ratio": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
+    },
+    "water_absorption_pct": {
+     "value": 4.5,
+     "unit": "%",
+     "quote": "Water absorption: 4.5%",
+     "page": 1
+    },
+    "slip_resistance_ptv": {
+     "value": 55,
+     "unit": "PTV",
+     "quote": "Slip resistance (wet pendulum): 55 PTV",
+     "page": 1
+    },
+    "thickness_mm": {
+     "value": 80,
+     "unit": "mm",
+     "quote": "Thickness: 80 mm",
+     "page": 1
+    },
+    "mass_per_m2_kg": {
+     "value": 180,
+     "unit": "kg/m2",
+     "quote": "Mass per m2: 180 kg",
+     "page": 1
+    },
+    "density_kg_m3": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
+    },
+    "recycled_content_pct": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
+    }
+   },
+   "price": {
+    "value": 44,
+    "unit": "RM/m2",
+    "quote": "Price: RM 44 per m2",
+    "page": 1
+   },
+   "warranty_years": {
+    "value": 15,
+    "unit": "years",
+    "quote": "Warranty: 15 years",
+    "page": 1
+   },
+   "gwp": {
+    "value": 15.2,
+    "declared_unit": "kgCO2e/m2",
+    "lifecycle_stages": "A1-A3",
+    "basis": "epd",
+    "quote": "GWP-total (A1-A3): 15.2 kgCO2e per m2",
+    "page": 2
+   },
+   "epd": {
+    "present": true,
+    "registration_number": "EPD-MY-PAV-1305",
+    "programme_operator": "Malaysia Green Building EPD Programme (fictitious)",
+    "standards": [
+     "ISO 14025",
+     "EN 15804+A2"
+    ],
+    "third_party_verified": true,
+    "valid_until": "2030-01-31",
+    "quote": "EPD registration no.: EPD-MY-PAV-1305",
+    "page": 2
+   },
+   "certifications": [
+    {
+     "scheme": "SIRIM_ECO_LABEL",
+     "name": "SIRIM Eco-Label",
+     "certificate_number": "ECO-SL-3108",
+     "valid_until": "2028-11-30",
+     "quote": "SIRIM Eco-Label certificate no.: ECO-SL-3108",
+     "page": 2
+    }
+   ],
+   "claims": [
+    {
+     "claim": "37% lower embodied carbon than standard pavers",
+     "quote": "37% lower embodied carbon than standard grey pavers (EPD-MY-PAV-1305).",
+     "page": 1,
+     "cited_evidence": "EPD-MY-PAV-1305"
+    }
+   ],
+   "notes": []
+  }
+ }
+}

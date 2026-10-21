@@ -1,0 +1,66 @@
+[
+ {
+  "file": "concrete-verdemix-ggbs50.pdf",
+  "useCaseId": "concrete-c30",
+  "supplier": "Lestari Readymix Sdn Bhd",
+  "product": "VerdeMix GGBS-50 Grade C30",
+  "sha256": "6e5b3e1bae25c03d0bfcd016dced91bffeea22c97ff6e711c34608a4f85f5209",
+  "bytes": 4906
+ },
+ {
+  "file": "concrete-ecocrete-40r.pdf",
+  "useCaseId": "concrete-c30",
+  "supplier": "Hijau Konkrit Trading",
+  "product": "EcoCrete 40R Grade C30",
+  "sha256": "b16d7daaa83b586e3e78aebffdf63e0d32b85344b39c633d968ccef5dd761842",
+  "bytes": 4124
+ },
+ {
+  "file": "concrete-standardmix-opc.pdf",
+  "useCaseId": "concrete-c30",
+  "supplier": "Prima Ready-Mix Sdn Bhd",
+  "product": "StandardMix OPC Grade C30",
+  "sha256": "b8e833d927ede70ba498bb62a4325d102b28700f0a072d6ff070ef56db66014e",
+  "bytes": 4460
+ },
+ {
+  "file": "concrete-lowcarb-c28.pdf",
+  "useCaseId": "concrete-c30",
+  "supplier": "Sinar Bina Concrete Sdn Bhd",
+  "product": "LowCarb Blend C28/30",
+  "sha256": "6f091fc659b7b7a4793bb0f722a4802001d056f4cece213402239b7081f3acaa",
+  "bytes": 4212
+ },
+ {
+  "file": "paver-repave-r30.pdf",
+  "useCaseId": "paver-80",
+  "supplier": "Taman Paving Industries",
+  "product": "RePave R30 80 mm",
+  "sha256": "d663820a7c6c334aede4835abc5b0b51672fcd6d459b59412132be2a64a7d026",
+  "bytes": 4349
+ },
+ {
+  "file": "paver-durablock-classic.pdf",
+  "useCaseId": "paver-80",
+  "supplier": "Kota Precast Sdn Bhd",
+  "product": "DuraBlock Classic 80 mm",
+  "sha256": "f4fc09a7e34b9e483bfd2ceafc7ec8d6c1ed35b510d7c080aa43773efd284044",
+  "bytes": 4616
+ },
+ {
+  "file": "paver-greenstep-eco.pdf",
+  "useCaseId": "paver-80",
+  "supplier": "Alam Hijau Pavers",
+  "product": "GreenStep Eco Paver 80 mm",
+  "sha256": "072bfaf00beb90e51ebd7c76338f38554082f7f383a902d0b405a78fa03c419d",
+  "bytes": 3976
+ },
+ {
+  "file": "paver-terrablock-ggbs.pdf",
+  "useCaseId": "paver-80",
+  "supplier": "Seri Precast Sdn Bhd",
+  "product": "TerraBlock GGBS 80 mm",
+  "sha256": "0854033bcf13e2b3e4ddffb7c835c0b02bc7d7bd75a06926e9600afb7167f27c",
+  "bytes": 4895
+ }
+]

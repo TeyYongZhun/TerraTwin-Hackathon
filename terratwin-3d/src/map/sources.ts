@@ -1,0 +1,98 @@
+/* GeoJSON builders for the 3D township layers. Geometry is built once; only properties change with the analytics. */
+import { getTownship } from '../data/township';
+import { getSites, type Site } from '../data/sites';
+import { type XY, toLngLat, xyToRing } from '../lib/geo';
+import type { Analytics } from '../hooks/useAnalytics';
+import { shadowPolygon } from '../lib/solar/shadows';
+import type { SunPos } from '../lib/solar/sun';
+import { CANOPY } from '../lib/solar/panels';
+import { siteGeometry } from '../lib/solar/siteGeometry';
+
+type FC = GeoJSON.FeatureCollection<GeoJSON.Polygon | GeoJSON.Point>;
+export const EMPTY: FC = { type: 'FeatureCollection', features: [] };
+const poly = (ring: [number, number][], props: Record<string, unknown>, id?: number): GeoJSON.Feature<GeoJSON.Polygon> =>
+  ({ type: 'Feature', id, properties: props, geometry: { type: 'Polygon', coordinates: [ring] } });
+
+/** Numeric feature ids (for feature-state) ↔ site ids. Buildings first, then car parks. */
+export const fidOf = new Map<string, number>();
+export const sidOf: string[] = [];
+
+let buildingBase: GeoJSON.Feature<GeoJSON.Polygon>[] | null = null, carparkBase: GeoJSON.Feature<GeoJSON.Polygon>[] | null = null;
+function bases() {
+  if (buildingBase && carparkBase) return;
+  const t = getTownship();
+  const reg = (id: string) => { const f = sidOf.length; sidOf.push(id); fidOf.set(id, f); return f; };
+  buildingBase = t.buildings.map((b) => poly(b.ring, { sid: b.id, h: Math.round(b.height * 10) / 10, name: b.name || '' }, reg(b.id)));
+  carparkBase = t.carParks.map((c) => poly(c.ring, { sid: c.id, name: c.name || '' }, reg(c.id)));
+}
+
+/** Buildings and car parks, tagged with solar percentile (-1 = not a candidate) and CREAM membership. */
+export function townshipFC(a: Analytics, cream: Set<string>): { buildings: FC; carparks: FC } {
+  bases();
+  const tag = (f: GeoJSON.Feature<GeoJSON.Polygon>) => {
+    const sid = f.properties!.sid as string, r = a.byId.get(sid);
+    return { ...f, properties: { ...f.properties, pct: r ? Math.round(r.pct * 1000) / 1000 : -1, kind: r?.site.kind ?? 'none', cream: cream.has(sid) ? 1 : 0 } };
+  };
+  return { buildings: { type: 'FeatureCollection', features: buildingBase!.map(tag) }, carparks: { type: 'FeatureCollection', features: carparkBase!.map(tag) } };
+}
+
+/** Ground shadows of every building and tree canopy for one sun position. */
+export function shadowsFC(sun: SunPos): FC {
+  if (sun.altitude <= 0.02) return EMPTY;
+  const features: GeoJSON.Feature<GeoJSON.Polygon>[] = [];
+  for (const o of getTownship().obstacles) {
+    const p = shadowPolygon(o.pts, o.h, sun);
+    if (p) features.push(poly(xyToRing(p), {}));
+  }
+  return { type: 'FeatureCollection', features };
+}
+
+/** Panels (+ rooftop plant) for a set of sites; `reveal` (0–1) grows the array from one corner for the build-out animation. */
+export function panelsFC(sites: Site[], revealFor?: { id: string; t: number }): FC {
+  const features: GeoJSON.Feature<GeoJSON.Polygon>[] = [];
+  for (const s of sites) {
+    if (s.kind === 'carpark') continue;
+    const g = siteGeometry(s);
+    let panels = g.panels;
+    if (revealFor && revealFor.id === s.id && revealFor.t < 1) {
+      const key = (q: XY[]) => q[0][0] * 0.6 + q[0][1];
+      const sorted = [...panels].sort((x, y) => key(x) - key(y));
+      panels = sorted.slice(0, Math.ceil(sorted.length * revealFor.t));
+    }
+    const base = g.panelBase + 0.12;
+    for (const p of panels) features.push(poly(xyToRing(p), { base, top: base + 0.22, k: 'panel' }));
+    for (const p of g.plant) features.push(poly(xyToRing(p), { base: g.panelBase, top: g.panelBase + 2.2, k: 'plant' }));
+  }
+  return { type: 'FeatureCollection', features };
+}
+
+/** Solar carport canopies: steel columns, canopy deck and the PV modules on top. */
+export function canopyFC(sites: Site[], revealFor?: { id: string; t: number }): FC {
+  const features: GeoJSON.Feature<GeoJSON.Polygon>[] = [];
+  for (const s of sites) {
+    const d = siteGeometry(s).canopy;
+    if (!d) continue;
+    const t = revealFor && revealFor.id === s.id ? revealFor.t : 1;
+    const colTop = CANOPY.clearance * Math.min(1, t * 1.6);
+    for (const c of d.columns) features.push(poly(xyToRing(c), { base: 0, top: colTop, k: 'column' }));
+    if (t > 0.55) for (const st of d.strips) features.push(poly(xyToRing(st), { base: CANOPY.clearance, top: CANOPY.clearance + 0.22, k: 'deck' }));
+    if (t > 0.7) {
+      const n = Math.ceil(d.panels.length * Math.min(1, (t - 0.7) / 0.3));
+      for (const p of d.panels.slice(0, n)) features.push(poly(xyToRing(p), { base: CANOPY.clearance + 0.24, top: CANOPY.roofTop, k: 'panel' }));
+    }
+  }
+  return { type: 'FeatureCollection', features };
+}
+
+export function outlineFC(s: Site | null): FC {
+  return s ? { type: 'FeatureCollection', features: [poly(s.ring, {})] } : EMPTY;
+}
+
+/** Floating labels for featured sites and the current selection. */
+export function labelsFC(selected: Site | null): FC {
+  const list = getSites().sites.filter((s) => s.featured || s.id === selected?.id);
+  return {
+    type: 'FeatureCollection',
+    features: list.map((s) => ({ type: 'Feature', properties: { name: s.name.replace(/^Car park · /, ''), sel: s.id === selected?.id ? 1 : 0 }, geometry: { type: 'Point', coordinates: toLngLat(s.center) } })),
+  };
+}

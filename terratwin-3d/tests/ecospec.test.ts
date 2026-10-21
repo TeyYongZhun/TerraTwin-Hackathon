@@ -1,0 +1,99 @@
+import { describe, expect, it } from 'vitest';
+import cache from '../src/data/ecospec/sample-extractions.json';
+import { ExtractionSchema, type Extraction } from '../src/lib/ecospec/schema';
+import { useCaseById } from '../src/data/ecospec/usecases';
+import { normalize, unitBasis } from '../src/lib/ecospec/normalize';
+import { assessEvidence } from '../src/lib/ecospec/evidence';
+import { type Candidate, rankCandidates } from '../src/lib/ecospec/rank';
+import { SAMPLE_DOCS } from '../scripts/sample-pack';
+
+const TODAY = new Date('2026-10-21T12:00:00');
+const entries = Object.entries(cache as Record<string, { fileName: string; useCaseId: string; source: string; extraction: Extraction }>);
+const cand = (file: string): Candidate => { const [id, v] = entries.find(([, x]) => x.fileName === file)!; return { id, fileName: v.fileName, ex: v.extraction, source: v.source }; };
+const pack = (uc: string) => entries.filter(([, v]) => v.useCaseId === uc).map(([id, v]) => ({ id, fileName: v.fileName, ex: v.extraction, source: v.source }));
+
+describe('sample pack cache', () => {
+  it('has one valid extraction per sample PDF', () => {
+    expect(entries).toHaveLength(SAMPLE_DOCS.length);
+    for (const [, v] of entries) expect(() => ExtractionSchema.parse(v.extraction)).not.toThrow();
+  });
+  it('quotes are verbatim lines of the rendered documents', () => {
+    for (const doc of SAMPLE_DOCS) {
+      const text = doc.pages.map((p) => [...(p.rows ?? []).map((r) => `${r.label}: ${r.value}`), ...(p.paras ?? [])]);
+      const ex = cand(doc.file).ex;
+      for (const f of [...Object.values(ex.specs), ex.price, ex.gwp, ...ex.claims]) if (f.quote) expect(text[f.page! - 1]).toContain(f.quote);
+    }
+  });
+});
+
+describe('normalisation', () => {
+  it('parses declared units', () => {
+    expect(unitBasis('kgCO2e/m3')).toBe('m3');
+    expect(unitBasis('kgCO2e per m²')).toBe('m2');
+    expect(unitBasis('kgCO2e/t')).toBe('t');
+    expect(unitBasis('kgCO2e per tonne')).toBe('t');
+    expect(unitBasis('kgCO2e/kg')).toBe('kg');
+  });
+  it('converts a per-tonne paver GWP with the stated mass per m²', () => {
+    const n = normalize(cand('paver-durablock-classic.pdf').ex, useCaseById('paver-80'));
+    expect(n.gwp).toBeCloseTo(112 * 0.182, 2);
+    expect(n.gwpAssumed).toBe(false);
+  });
+  it('keeps per-m³ concrete GWP as declared', () => {
+    expect(normalize(cand('concrete-verdemix-ggbs50.pdf').ex, useCaseById('concrete-c30')).gwp).toBe(182);
+  });
+});
+
+describe('evidence & greenwashing', () => {
+  it('flags marketing claims with no third-party evidence', () => {
+    const e = assessEvidence(cand('concrete-ecocrete-40r.pdf').ex, TODAY);
+    expect(e.greenwash).toHaveLength(2);
+    expect(e.greenwash[0].reason).toMatch(/SIRIM|EPD/);
+    expect(e.grade).toBe('unverified');
+  });
+  it('treats an expired SIRIM certificate as no evidence', () => {
+    const e = assessEvidence(cand('concrete-lowcarb-c28.pdf').ex, TODAY);
+    expect(e.expiredLabels).toHaveLength(1);
+    expect(e.greenwash[0].reason).toMatch(/expired/);
+  });
+  it('accepts a valid ISO 14025 / EN 15804 EPD as verified carbon', () => {
+    const e = assessEvidence(cand('paver-terrablock-ggbs.pdf').ex, TODAY);
+    expect(e.gwpStatus).toBe('verified');
+    expect(e.greenwash).toHaveLength(0);
+    expect(e.grade).toBe('verified');
+  });
+  it('a valid eco-label backs general claims but not a self-declared carbon number', () => {
+    const e = assessEvidence(cand('paver-repave-r30.pdf').ex, TODAY);
+    expect(e.greenwash).toHaveLength(0);
+    expect(e.gwpStatus).toBe('self_declared');
+    expect(e.grade).toBe('partial');
+  });
+  it('an EPD becomes expired after its validity date', () => {
+    expect(assessEvidence(cand('paver-terrablock-ggbs.pdf').ex, new Date('2031-01-01')).gwpStatus).toBe('expired');
+  });
+});
+
+describe('gate-then-rank', () => {
+  it('concrete: recommends the verified GGBS mix and fails the 28 MPa mix at the gate', () => {
+    const { rows, recommended } = rankCandidates(useCaseById('concrete-c30'), 180, pack('concrete-c30'), { premiumCapPct: 20, today: TODAY });
+    expect(recommended?.c.fileName).toBe('concrete-verdemix-ggbs50.pdf');
+    const c28 = rows.find((r) => r.c.fileName === 'concrete-lowcarb-c28.pdf')!;
+    expect(c28.gatePass).toBe(false);
+    expect(c28.reasons.join(' ')).toMatch(/28/);
+    expect(rows.find((r) => r.c.fileName === 'concrete-ecocrete-40r.pdf')!.eligible).toBe(false);
+    expect(recommended!.abatement!).toBeCloseTo((318 - 278) / ((318 - 182) / 1000), 0);
+  });
+  it('pavers: missing slip test fails the gate; premium cap switches the pick', () => {
+    const uc = useCaseById('paver-80');
+    const r25 = rankCandidates(uc, 1000, pack('paver-80'), { premiumCapPct: 25, today: TODAY });
+    expect(r25.recommended?.c.fileName).toBe('paver-terrablock-ggbs.pdf');
+    expect(r25.rows.find((r) => r.c.fileName === 'paver-greenstep-eco.pdf')!.gate.find((g) => g.req.key === 'slip_resistance_ptv')!.status).toBe('missing');
+    const r15 = rankCandidates(uc, 1000, pack('paver-80'), { premiumCapPct: 15, today: TODAY });
+    expect(r15.recommended?.c.fileName).toBe('paver-durablock-classic.pdf');
+  });
+  it('eligible candidates are ordered before ineligible ones', () => {
+    const { rows } = rankCandidates(useCaseById('paver-80'), 500, pack('paver-80'), { premiumCapPct: 25, today: TODAY });
+    const firstIneligible = rows.findIndex((r) => !r.eligible);
+    expect(rows.slice(firstIneligible).every((r) => !r.eligible)).toBe(true);
+  });
+});
