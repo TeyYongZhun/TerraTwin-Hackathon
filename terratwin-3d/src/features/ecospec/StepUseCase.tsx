@@ -64,8 +64,8 @@ export function StepUseCase() {
         <p className="flex-1 text-xs text-slate-400">
           {panels
             ? pvHandoff
-              ? <span className="flex items-center gap-1.5 text-sky-200"><PvIcon size={13} className="shrink-0" /> Auto-filled from the SolarTwin {pvHandoff.kind === 'carpark' ? 'canopy deck' : pvHandoff.kind === 'home' ? 'home array' : 'rooftop array'} at {pvHandoff.siteName}: {pvHandoff.panels.toLocaleString()} mono PERC modules = {Math.round(pvHandoff.kwp).toLocaleString()} kWp. The confirmed module is built on the site and re-sizes its kWp by efficiency.</span>
-              : 'Tip: design a solar array on a rooftop or home (or a canopy on a car park) in SolarTwin and press "Choose solar panels" to fill this automatically.'
+              ? <span className="flex items-center gap-1.5 text-sky-200"><PvIcon size={13} className="shrink-0" /> Auto-filled from the SolarTwin {pvHandoff.kind === 'carpark' ? 'canopy deck' : pvHandoff.kind === 'home' ? 'home panel design' : 'rooftop panel design'} at {pvHandoff.siteName}: {pvHandoff.panels.toLocaleString()} mono PERC modules = {Math.round(pvHandoff.kwp).toLocaleString()} kWp. The confirmed module is built on the site and re-sizes its kWp by efficiency.</span>
+              : 'Tip: design solar panels on a rooftop or home (or a canopy on a car park) in SolarTwin and press "Choose solar panels" to fill this automatically.'
             : handoff
               ? <span className="flex items-center gap-1.5 text-sky-200"><Car size={13} className="shrink-0" /> Auto-filled from the SolarTwin canopy at {handoff.siteName}: {handoff.columns} columns × 3.9 m³ footings = {handoff.footingConcreteM3} m³ concrete; {handoff.paverAreaM2.toLocaleString()} m² of paving.</span>
               : 'Tip: design a solar canopy on a car park in SolarTwin and press "Choose canopy materials" to fill this automatically.'}

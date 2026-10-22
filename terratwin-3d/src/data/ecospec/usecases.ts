@@ -42,7 +42,7 @@ export const USE_CASES: UseCase[] = [
   },
   {
     id: 'pv-module', title: 'Solar PV modules', short: 'PV modules', fu: 'kWp', fuLabel: 'kWp',
-    description: 'The panels on the rooftop, home or canopy array. Efficiency, heat tolerance and degradation are mandatory; then the lowest verified embodied carbon wins, and the winner is built on the site.',
+    description: 'The panels on the rooftop, home or car-park canopy. Efficiency, heat tolerance and degradation are mandatory; then the lowest verified embodied carbon wins, and the winner is built on the site.',
     requirements: [
       { key: 'module_efficiency_pct', label: 'Module efficiency', op: '>=', value: 21, unit: '%', why: 'Fits the designed capacity on the usable roof area' },
       { key: 'temp_coefficient_pct_per_c', label: 'Temp. coefficient of Pmax', op: '>=', value: -0.35, unit: '%/°C', why: 'Malaysian cells run about 25 °C above STC' },
