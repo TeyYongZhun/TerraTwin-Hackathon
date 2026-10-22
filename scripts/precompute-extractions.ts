@@ -10,7 +10,7 @@ import { SAMPLE_DOCS } from './sample-pack';
 
 const root = (p: string) => fileURLToPath(new URL(`../${p}`, import.meta.url));
 if (!aiEnabled()) {
-  console.error('ANTHROPIC_API_KEY is not set (terratwin-3d/.env). The bundled cache keeps the sample pack ground truth.');
+  console.error('ANTHROPIC_API_KEY is not set (.env in the project root). The bundled cache keeps the sample pack ground truth.');
   process.exit(1);
 }
 const cacheFile = root('src/data/ecospec/sample-extractions.json');

@@ -14,7 +14,6 @@ A live 3D digital twin of **City of Elmina** (Sime Darby Property, Shah Alam) fo
 Requires Node 20.19+ (tested on Node 24).
 
 ```bash
-cd terratwin-3d
 npm install
 cp .env.example .env        # optional: add ANTHROPIC_API_KEY for live Claude
 npm run dev                 # API on :8787 + app on http://localhost:5173
