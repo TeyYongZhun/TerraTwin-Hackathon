@@ -1,5 +1,11 @@
 # TerraTwin AI 3D: the Net-Zero Township Copilot
 
+[![TerraTwin AI: the Net-Zero Township Copilot](docs/cover.jpg)](https://terra-twin-hackathon.vercel.app)
+
+### ▶ Live demo: [terra-twin-hackathon.vercel.app](https://terra-twin-hackathon.vercel.app)
+
+No install or API key needed: open the link and press **Play guided demo**, or **Skip intro** to explore. ([What the live site can do](#deployment))
+
 > **Where should a township build solar, and what should it build it with?**
 > TerraTwin answers both on a live 3D digital twin: it screens every real rooftop, car park and home for solar, then reads supplier documents to pick verified low-carbon panels and materials, and builds the choice on the map.
 
@@ -11,10 +17,11 @@
 ![Express](https://img.shields.io/badge/Express-5-000000?logo=express&logoColor=white)
 ![Claude](https://img.shields.io/badge/Claude-Opus_5.5-D97757?logo=anthropic&logoColor=white)
 ![Tests](https://img.shields.io/badge/tests-49_passing-2EA44F)
+[![Live on Vercel](https://img.shields.io/badge/Live_on-Vercel-000000?logo=vercel&logoColor=white)](https://terra-twin-hackathon.vercel.app)
 
 Built for the **PLANET hackathon** challenge on **City of Elmina** (Sime Darby Property, Shah Alam).
 
-**Contents:** [The problem](#the-problem) · [What it does](#what-it-does) · [At a glance](#at-a-glance) · [Demo](#the-guided-demo) · [Architecture](#architecture) · [Tech stack](#tech-stack) · [How we use AI](#how-we-use-ai) · [Run it](#run-it) · [How it works](#how-it-works) · [Testing](#testing-and-quality) · [Repo structure](#repo-structure) · [Data and honesty notes](#data-and-honesty-notes) · [Roadmap](#roadmap)
+**Contents:** [The problem](#the-problem) · [What it does](#what-it-does) · [At a glance](#at-a-glance) · [Screenshots](#screenshots) · [Demo](#the-guided-demo) · [Architecture](#architecture) · [Tech stack](#tech-stack) · [How we use AI](#how-we-use-ai) · [Run it](#run-it) · [How it works](#how-it-works) · [Testing](#testing-and-quality) · [Repo structure](#repo-structure) · [Data and honesty notes](#data-and-honesty-notes) · [Roadmap](#roadmap)
 
 ## The problem
 
@@ -69,6 +76,28 @@ These are screening estimates from this model, not SDP's reported inventory (see
 - **Homes (CREAM):** installed kWp × RM 7 per kWp per month × 12. Homeowners lease their roof and pay nothing upfront.
 - **Rooftops and car parks:** generation = kWp × 1,350 kWh/kWp × (1 − shading loss). The share used on site (from an hourly demand match) avoids the RM 0.47/kWh commercial tariff, the surplus earns the RM 0.20/kWh export credit, and 1% of CAPEX a year goes to O&M.
 - The guided demo's final step reads **≈RM 29.7 million**: by then it has built the top-scoring panel (HJT) on Elmina Lakeside Mall, which adds about RM 0.26 million a year.
+
+## Screenshots
+
+All taken on the [live site](https://terra-twin-hackathon.vercel.app).
+
+<table>
+  <tr>
+    <td width="50%"><img src="docs/screenshots/01-township-3d.jpg" alt="City of Elmina in 3D, buildings coloured by solar score, with the solar opportunity ranking" /><br /><b>1. The township in 3D.</b> 2,092 sites ranked by solar score, with live sun and shadows.</td>
+    <td width="50%"><img src="docs/screenshots/02-design-preview.jpg" alt="Elmina Sales Gallery with a preview of its solar panel design and the site drawer" /><br /><b>2. Design a preview.</b> Panels laid out on the roof, with capacity, savings and red flags.</td>
+  </tr>
+  <tr>
+    <td><img src="docs/screenshots/03-compare-evidence.jpg" alt="Spec-to-spec comparison of four PV module datasheets with greenwashing flagged" /><br /><b>3. Compare the evidence.</b> Every value cites its source; greenwashing and failed specs are flagged.</td>
+    <td><img src="docs/screenshots/04-shortlist-score.jpg" alt="Shortlist with total scores, cost versus carbon chart and score weights" /><br /><b>4. Score and choose.</b> A 0–100 score from carbon cut, cost and efficiency, with re-weighting.</td>
+  </tr>
+  <tr>
+    <td><img src="docs/screenshots/05-built-roof.jpg" alt="Elmina Sales Gallery rebuilt with the chosen HJT panels" /><br /><b>5. Built on the roof.</b> The chosen module re-sizes the system: 737 → 803 kWp and RM 37k → RM 42k a month.</td>
+    <td><img src="docs/screenshots/06-built-canopy.jpg" alt="Car-park canopy built with low-carbon paving and HJT panels" /><br /><b>6. Built on the car park.</b> Canopy paving from Canopy Materials, panels from Solar Panels.</td>
+  </tr>
+  <tr>
+    <td colspan="2"><img src="docs/screenshots/07-net-zero-dashboard.jpg" alt="Net-Zero dashboard with SSR2030 progress, IFRS S2-style metrics, the solar portfolio and low-carbon materials" /><br /><b>7. The Net-Zero dashboard.</b> Operational and embodied carbon roll up into SSR2030 progress, IFRS S2-style metrics and a printable decision pack.</td>
+  </tr>
+</table>
 
 ## The guided demo
 
@@ -213,6 +242,19 @@ npm run build && npm start   # http://localhost:8787
 | `CLAUDE_MODEL` | `claude-opus-5-5` | Model override |
 | `PORT` | `8787` | API (and production) port |
 
+### Deployment
+
+The live demo at **[terra-twin-hackathon.vercel.app](https://terra-twin-hackathon.vercel.app)** is the static Vite build (`npm run build` → `dist/`) hosted on Vercel. The Express API is not deployed there, so the app detects that `/api/health` is missing and switches itself to **Demo cache** mode:
+
+| On the live site | Status |
+|---|---|
+| 3D township, screening, shadows, red flags, finance | ✅ Works |
+| Design → choose → build, for rooftops, homes and canopies | ✅ Works |
+| Sample supplier packs, Compare evidence, scoring and shortlist | ✅ Works (bundled extractions) |
+| Site briefs and procurement memos | ✅ Works (written offline from the same numbers) |
+| Copilot (Ctrl K) and the guided demo | ✅ Works (keyword commands) |
+| Reading your own uploaded PDFs, live Claude | ⚙️ Needs the API: run `npm run dev` locally with `ANTHROPIC_API_KEY` |
+
 ## How it works
 
 **SolarTwin engine** (`src/lib/solar/`). These are pure functions with unit tests.
@@ -280,6 +322,7 @@ npm run typecheck   # tsc --noEmit over app, server, scripts and tests
 
 ```
 .
+├── docs/                      cover.jpg and screenshots/ for this README
 ├── index.html                 Vite entry
 ├── public/samples/            12 fictitious supplier PDFs: concrete, pavers, PV modules
 ├── scripts/                   fetch-osm.mjs · precompute-solar.ts · sample-pack.ts · make-sample-pdfs.ts · precompute-extractions.ts
@@ -327,6 +370,7 @@ npm run typecheck   # tsc --noEmit over app, server, scripts and tests
 - **Live evidence checks:** verify EPD and eco-label numbers against the programme operators' registries instead of trusting the document.
 - **Better roofs:** pitched-roof planes and plant detection from drone or LiDAR surveys, instead of flat layouts on OSM footprints.
 - **Grid data:** TNB transformer headroom and feeder capacity to replace the size-based grid checks.
+- **Live Claude on the hosted demo:** deploy the API (for example as Vercel serverless functions) so the live site can read uploaded PDFs and write live briefs and memos.
 - **Persistence and teams:** save designs, picks and portfolios per user (today the session lives in the browser and resets on reload), and export decisions to procurement systems.
 
 ## Acknowledgements

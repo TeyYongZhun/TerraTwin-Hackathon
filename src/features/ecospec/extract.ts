@@ -60,7 +60,8 @@ async function runOne(store: SpecStore, id: string, file: File, useCaseId: strin
     upsertDoc({ id, sha256: r.sha256, status: 'done', extraction: r.extraction, source: r.source });
   } catch (e) {
     const msg = (e as Error).message;
-    upsertDoc({ id, status: 'error', error: /Failed to fetch|HTTP 50[24]/.test(msg) ? 'API server not reachable: run `npm run dev`. Sample-pack PDFs still work offline.' : msg });
+    // No API at all (a static deploy answers 404 / 405; a stopped dev server fails to fetch or 502 / 504s).
+    upsertDoc({ id, status: 'error', error: /Failed to fetch|HTTP (40[45]|50[24])/.test(msg) ? 'Reading new PDFs needs the API server: run `npm run dev` locally. The sample pack works here.' : msg });
   }
 }
 
