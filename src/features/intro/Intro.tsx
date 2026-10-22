@@ -53,7 +53,7 @@ export function Intro({ onDemo }: { onDemo: () => void }) {
 
             <motion.div initial={{ y: 16, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.8 }} className="mt-8 flex flex-wrap items-center gap-3">
               <Btn tone="primary" className="px-5 py-3 text-base" onClick={() => go()}>Fly to City of Elmina <ArrowRight size={18} /></Btn>
-              <Btn className="px-4 py-3 text-base" onClick={() => go(onDemo)}><Play size={16} /> Play 2-min guided demo</Btn>
+              <Btn className="px-4 py-3 text-base" onClick={() => go(onDemo)}><Play size={16} /> Play guided demo</Btn>
               <button type="button" className="text-xs text-slate-400 underline-offset-4 hover:text-slate-200 hover:underline" onClick={() => { skipIntro(); set({ started: true }); }}>Skip intro</button>
             </motion.div>
             <p className="mt-8 flex items-center gap-1.5 text-[11px] text-slate-500"><Leaf size={12} /> Footprints © OpenStreetMap contributors · imagery © Esri · engineering attributes and prices are illustrative.</p>

@@ -18,8 +18,8 @@ export function StepUseCase() {
       <h3 className="text-lg font-bold text-white">{panels ? 'Solar panel specification' : 'What are you specifying?'}</h3>
       <p className="mt-1 text-sm text-slate-400">
         {panels
-          ? 'Only PV modules that meet the same performance requirement are compared, then ranked by verified embodied carbon and cost. The winner is built on the SolarTwin site.'
-          : 'Pick a material. Only products that meet the same performance requirement are compared, then ranked by verified embodied carbon and cost.'}
+          ? 'Only PV modules that meet the performance requirement are scored, on verified embodied carbon, cost and efficiency. The winner is built on the SolarTwin site.'
+          : 'A solar canopy needs both materials: concrete for the column footings and pavers for the ground underneath. Pick one to specify; when it is built, the shortlist offers the other. Only products that meet the performance requirement are scored, on verified carbon, cost and strength.'}
       </p>
       <div className={cx('mt-5 grid gap-4', cases.length > 1 && 'md:grid-cols-2')}>
         {cases.map((u) => {
@@ -46,7 +46,7 @@ export function StepUseCase() {
                   <li key={r.key} title={r.why} className="rounded-lg bg-black/30 px-2 py-1 text-[11px] text-slate-200 ring-1 ring-white/10">{r.label} {r.op === '>=' ? '≥' : '≤'} {r.value}{r.unit ? ` ${r.unit}` : ''}</li>
                 ))}
               </ul>
-              <div className="mt-3 text-[11px] text-slate-500">Baseline: {u.baseline.label}: {u.baseline.gwp} kgCO₂e / RM {u.baseline.price} per {u.fuLabel}</div>
+              <div className="mt-3 text-[11px] text-slate-500">Standard product: {u.baseline.label}: {u.baseline.gwp} kgCO₂e / RM {u.baseline.price} per {u.fuLabel}</div>
             </button>
           );
         })}

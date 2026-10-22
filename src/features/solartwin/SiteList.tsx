@@ -1,4 +1,4 @@
-/* Left panel: township totals, Rooftops / Car parks / CREAM homes tabs, live score weights and the ranked list. */
+/* Left panel: township totals, Buildings / Car parks / CREAM homes tabs, live score weights and the ranked list. */
 import { useMemo, useState } from 'react';
 import { Building, Car, ChevronDown, House, RotateCcw, Search, SlidersHorizontal, TriangleAlert, Settings2 } from 'lucide-react';
 import { useAppPick } from '../../store/app';
@@ -8,7 +8,7 @@ import { DEFAULT_WEIGHTS, type Weights, fmt } from '../../lib/solar/evaluate';
 import { CountUp, cx, rm, scoreColor, scoreInk } from '../../components/ui';
 
 const TABS: { id: SiteKind; label: string; icon: typeof Building }[] = [
-  { id: 'roof', label: 'Rooftops', icon: Building }, { id: 'carpark', label: 'Car parks', icon: Car }, { id: 'home', label: 'Homes', icon: House },
+  { id: 'roof', label: 'Buildings', icon: Building }, { id: 'carpark', label: 'Car parks', icon: Car }, { id: 'home', label: 'Homes', icon: House },
 ];
 const W_LABEL: Record<keyof Weights, string> = { capacity: 'Usable capacity', shading: 'Low shading', demand: 'Demand match', readiness: 'Data readiness' };
 

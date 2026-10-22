@@ -54,6 +54,8 @@ interface AppState {
   ai: { ai: boolean; model: string } | null;
   copilotOpen: boolean;
   demoStep: number | null;
+  /** The guided demo is held on its current beat. */
+  demoPaused: boolean;
   assumptionsOpen: boolean;
   toasts: Toast[];
   set: (p: Partial<AppState>) => void;
@@ -98,6 +100,7 @@ export const useApp = create<AppState>((set, get) => ({
   ai: null,
   copilotOpen: false,
   demoStep: null,
+  demoPaused: false,
   assumptionsOpen: false,
   toasts: [],
   set: (p) => set(p),

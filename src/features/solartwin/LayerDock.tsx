@@ -17,7 +17,7 @@ export function LayerDock({ className }: { className?: string }) {
     <div className={cx('pointer-events-auto flex flex-col items-end gap-2', className)}>
       {layers.heat && demoStep === null && (
         <div className="glass rounded-xl px-3 py-2">
-          <div className="mb-1 text-[10px] uppercase tracking-wider text-slate-400" title="Percentile rank within rooftops, car parks or homes">Solar score rank</div>
+          <div className="mb-1 text-[10px] uppercase tracking-wider text-slate-400" title="Percentile rank within buildings, car parks or homes">Solar score rank</div>
           <div className="h-2 w-36 rounded-full" style={{ background: `linear-gradient(90deg, ${HEAT_STOPS.map(([p, c]) => `${c} ${p * 100}%`).join(', ')})` }} />
           <div className="mt-0.5 flex justify-between text-[10px] text-slate-400"><span>lower</span><span>best</span></div>
         </div>

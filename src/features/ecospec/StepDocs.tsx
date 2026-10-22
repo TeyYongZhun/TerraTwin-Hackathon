@@ -41,8 +41,8 @@ export function StepDocs() {
           onClick={() => input.current?.click()} role="button" tabIndex={0} onKeyDown={(e) => e.key === 'Enter' && input.current?.click()}
           className={cx('flex cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed px-6 py-7 text-center transition', drag ? 'border-emerald-300 bg-emerald-400/10' : 'border-white/15 bg-white/[0.02] hover:border-white/30')}>
           <Upload size={26} className="text-emerald-300" />
-          <div className="mt-2 font-semibold text-white">Drop supplier PDFs here</div>
-          <div className="text-xs text-slate-400">or click to browse · PDF only · max 25 MB each</div>
+          <div className="mt-2 font-semibold text-white">Add supplier</div>
+          <div className="text-xs text-slate-400">Drop their datasheet, EPD or quote, or click to browse · PDF only · max 25 MB each</div>
           <input ref={input} type="file" accept="application/pdf,.pdf" multiple hidden onChange={(e) => { onFiles(e.target.files); e.target.value = ''; }} />
         </div>
         <div className="flex flex-col justify-center gap-2 rounded-2xl bg-gradient-to-br from-emerald-400/10 to-sky-400/10 p-4 ring-1 ring-white/10">

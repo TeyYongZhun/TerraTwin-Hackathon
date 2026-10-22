@@ -13,6 +13,7 @@ export interface PvSpec {
   /** Module efficiency at STC (fraction) */ efficiency: number;
   /** Temperature coefficient of Pmax (%/°C) */ tempCoeff: number;
   /** Normalised embodied carbon (kgCO₂e/kWp) and module price (RM/kWp) */ gwpPerKwp: number; pricePerKwp: number;
+  /** The standard reference module, picked in the Solar Panels tab in place of a supplier's. */ standard?: boolean;
 }
 
 const PV = useCaseById('pv-module').baseline;
@@ -48,6 +49,12 @@ export const heatFactor = (m: PvSpec) => (1 + (m.tempCoeff * DT_CELL) / 100) / (
 export function capexPerKwp(kind: SiteKind, m: PvSpec, A: Assumptions): number {
   const rate = kind === 'carpark' ? A.capexCanopy : kind === 'home' ? A.capexHome : A.capexRoof;
   return rate * (1 - AREA_SHARE[kind] * (1 - BASE_MODULE.efficiency / m.efficiency)) + m.pricePerKwp - BASE_MODULE.pricePerKwp;
+}
+
+/** System cost per kWh generated with this module, relative to the baseline module (1 = same): CAPEX per kWp over yield
+    per kWp. A dearer module that fits more power on the same area and loses less to heat can cost less per kWh. */
+export function costPerKwhRatio(kind: SiteKind, m: PvSpec, A: Assumptions): number {
+  return capexPerKwp(kind, m, A) / heatFactor(m) / capexPerKwp(kind, BASE_MODULE, A);
 }
 
 /** The baseline site re-sized for another module on the same usable area: kWp scales with module efficiency. */

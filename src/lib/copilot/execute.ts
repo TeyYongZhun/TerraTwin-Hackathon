@@ -42,7 +42,7 @@ export function runActions(actions: CopilotAction[]): string[] {
       }
       case 'show_ranking':
         app.set({ module: 'solar', tab: a.input.kind, listQuery: a.input.search ?? '', hideBlockers: !!a.input.hide_blockers });
-        log.push(`Showing ${a.input.kind === 'roof' ? 'rooftops' : a.input.kind === 'carpark' ? 'car parks' : 'CREAM homes'}${a.input.search ? ` matching "${a.input.search}"` : ''}${a.input.hide_blockers ? ' without blockers' : ''}`); break;
+        log.push(`Showing ${a.input.kind === 'roof' ? 'buildings' : a.input.kind === 'carpark' ? 'car parks' : 'CREAM homes'}${a.input.search ? ` matching "${a.input.search}"` : ''}${a.input.hide_blockers ? ' without blockers' : ''}`); break;
       case 'set_sun': {
         const { month, day, hour, play } = a.input, cur = useApp.getState().sun;
         app.setSun({ month: month ?? cur.month, day: day ?? (month ? 21 : cur.day), hour: hour !== null ? Math.max(6.5, Math.min(20, hour)) : cur.hour });

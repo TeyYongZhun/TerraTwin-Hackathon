@@ -38,6 +38,8 @@ input[type="range"].range:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 
 .maplibregl-ctrl-attrib a { color: #cbd5e1 !important; }
 .maplibregl-ctrl-attrib-button { filter: invert(1); }
 
+/* Guided demo: the beat's progress bar, held while the demo is paused. */
+@keyframes demo-progress { from { width: 0; } to { width: 100%; } }
 @keyframes pulse-ring { 0% { transform: scale(0.9); opacity: 0.7; } 100% { transform: scale(1.6); opacity: 0; } }
 .pulse-ring::after { content: ""; position: absolute; inset: 0; border-radius: 9999px; border: 2px solid currentColor; animation: pulse-ring 1.6s ease-out infinite; }
 

@@ -192,9 +192,11 @@ export function SiteDrawer() {
                     ))}
                   </div>
                   <p className="text-[11px] text-slate-400">
-                    {chosen
+                    {chosen?.standard
+                      ? <>Built with the standard <b className="text-slate-200">{chosen.product}</b>, picked in the Solar Panels tab: no low-carbon upgrade.</>
+                      : chosen
                       ? <>Built with <b className="text-slate-200">{chosen.product}</b> from {chosen.supplier}, picked in the Solar Panels tab: {(chosen.efficiency * 100).toFixed(1)}% efficient, {fmt(chosen.gwpPerKwp)} kgCO₂e/kWp verified.</>
-                      : 'Mono PERC 550 W baseline. The Solar Panels tab reads supplier datasheets and EPDs, rejects greenwashing and picks the lowest verified-carbon panel that meets the spec.'}
+                      : 'Mono PERC 550 W baseline. The Solar Panels tab reads supplier datasheets and EPDs, rejects greenwashing and picks the verified panel with the best total score for carbon, cost and efficiency that meets the spec.'}
                   </p>
                   {!chosen && <PreviewNote what="panels" />}
                   <Btn tone="primary" className="w-full" onClick={toPanelSpec}><SolarPanel size={14} /> {chosen ? 'Change' : 'Choose'} solar panels <ArrowRight size={14} /></Btn>

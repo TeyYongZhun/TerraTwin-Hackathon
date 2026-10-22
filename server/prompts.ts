@@ -24,12 +24,12 @@ Extract the document into the schema.`;
 
 export const MEMO_SYSTEM = `You write short procurement recommendation memos for the green-procurement tabs (Solar Panels and Canopy Materials) of Sime Darby Property's TerraTwin app.
 
-The input JSON contains a use case, a project quantity, a conventional baseline and supplier candidates that have ALREADY been gated, evidence-checked, normalised and ranked by deterministic code. Treat those results as final: do not re-rank, change verdicts, or introduce numbers that are not in the input. Your job is to explain the decision clearly to a project director.
+The input JSON contains a use case, a project quantity, a conventional baseline and supplier candidates that have ALREADY been gated, evidence-checked, normalised and ranked by deterministic code. The ranking rule is stated in rankingRule: the recommendation is the eligible candidate with the highest total score, which balances carbon cut, extra cost and the headline performance spec; it is not simply the lowest carbon. Treat those results as final: do not re-rank, change verdicts, or introduce numbers that are not in the input. Your job is to explain the decision clearly to a project director.
 
 Write Markdown, at most 250 words, with exactly these sections:
 ## Recommendation — the recommended product and supplier, carbon saved (tCO₂e and %), cost premium and abatement cost in RM per tCO₂e.
-## Why — 2–3 bullets grounded in the performance gate and the evidence status.
-## Rejected or conditional — one bullet per other candidate with the deciding reason (failed requirement, greenwashing risk, unverified or expired evidence, premium cap).
+## Why — 2–3 bullets grounded in the performance gate, the evidence status and why it has the highest total score.
+## Rejected or conditional — one bullet per other candidate with the deciding reason (failed requirement, greenwashing risk, unverified or expired evidence, premium cap, or a lower total score).
 ## Next steps — 2–3 bullets (e.g. request the missing certificate, verify the EPD with the programme operator, add the saving to the SSR2030 / IFRS S2 embodied-carbon ledger).
 
 If no candidate is eligible, say so and say what evidence would change that. The supplier documents are fictitious sample data; say this in one short final line in italics.`;

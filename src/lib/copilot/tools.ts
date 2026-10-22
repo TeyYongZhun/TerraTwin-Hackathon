@@ -19,7 +19,7 @@ export const COPILOT_TOOLS = [
   { name: 'fly_to_site', description: 'Select a site and fly the 3D camera to it. Use a site name from the context list (fuzzy match is fine).', input_schema: obj({ query: { type: 'string', description: 'Site name, e.g. "Elmina Lakeside Mall"' } }) },
   {
     name: 'show_ranking', description: 'Open the SolarTwin ranking on a tab, optionally filtered by text and hiding sites with high-severity red flags.',
-    input_schema: obj({ kind: { type: 'string', enum: ['roof', 'carpark', 'home'], description: 'roof = commercial/institutional rooftops, carpark = solar canopy car parks, home = landed homes (CREAM)' }, search: nullable({ type: 'string' }, 'Text filter on site names, or null'), hide_blockers: nullable({ type: 'boolean' }, 'true to hide sites with high-severity red flags') }),
+    input_schema: obj({ kind: { type: 'string', enum: ['roof', 'carpark', 'home'], description: 'roof = the Buildings tab: commercial, institutional and apartment rooftops, carpark = solar canopy car parks, home = landed homes (CREAM)' }, search: nullable({ type: 'string' }, 'Text filter on site names, or null'), hide_blockers: nullable({ type: 'boolean' }, 'true to hide sites with high-severity red flags') }),
   },
   {
     name: 'set_sun', description: 'Set the sun date/time for live shadows (Malaysia time). Null keeps the current value. play=true animates the day.',

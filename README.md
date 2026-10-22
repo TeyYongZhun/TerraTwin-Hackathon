@@ -14,7 +14,7 @@
 
 Built for the **PLANET hackathon** challenge on **City of Elmina** (Sime Darby Property, Shah Alam).
 
-**Contents:** [The problem](#the-problem) · [What it does](#what-it-does) · [At a glance](#at-a-glance) · [Demo](#a-2-minute-tour) · [Architecture](#architecture) · [Tech stack](#tech-stack) · [How we use AI](#how-we-use-ai) · [Run it](#run-it) · [How it works](#how-it-works) · [Testing](#testing-and-quality) · [Repo structure](#repo-structure) · [Data and honesty notes](#data-and-honesty-notes) · [Roadmap](#roadmap)
+**Contents:** [The problem](#the-problem) · [What it does](#what-it-does) · [At a glance](#at-a-glance) · [Demo](#the-guided-demo) · [Architecture](#architecture) · [Tech stack](#tech-stack) · [How we use AI](#how-we-use-ai) · [Run it](#run-it) · [How it works](#how-it-works) · [Testing](#testing-and-quality) · [Repo structure](#repo-structure) · [Data and honesty notes](#data-and-honesty-notes) · [Roadmap](#roadmap)
 
 ## The problem
 
@@ -32,8 +32,8 @@ A live 3D digital twin that joins four modules into one story:
 | Module | Carbon | What it does |
 |---|---|---|
 | **SolarTwin** | Operational | Ranks 262 rooftops, 9 car parks and 1,821 landed-home rows (≈6,900 homes) by usable area, shading loss and daytime demand match. It flags missing data and engineering checks, designs solar carports, and shows residents their CREAM roof-lease income. |
-| **Solar Panels** | Both | Runs the supplier-document pipeline below on PV module datasheets: gates on efficiency, heat tolerance and degradation, ranks by verified embodied carbon per kWp, and builds the chosen module on the SolarTwin site, re-sizing its kWp, yield and CAPEX. |
-| **Canopy Materials** | Embodied | Reads car-park canopy supplier PDFs (footing concrete, pavers) with Claude: specs, prices, EPDs, certificates and every green claim, each with its verbatim quote and page. It gates by performance, flags greenwashing, normalises carbon to the functional unit, shortlists verified low-carbon options, and builds the chosen footings and paving into the canopy. |
+| **Solar Panels** | Both | Runs the supplier-document pipeline below on PV module datasheets: gates on efficiency, heat tolerance and degradation, scores each eligible module out of 100 on carbon cut, extra cost and efficiency, and builds the top-scoring module on the SolarTwin site, re-sizing its kWp, yield and CAPEX. |
+| **Canopy Materials** | Embodied | Reads car-park canopy supplier PDFs (footing concrete, pavers) with Claude: specs, prices, EPDs, certificates and every green claim, each with its verbatim quote and page. It gates by performance, flags greenwashing, normalises carbon to the functional unit, recommends the top-scoring verified option (carbon cut, extra cost and strength), and builds the chosen footings and paving into the canopy. |
 | **Net-Zero dashboard** | Both | Rolls the chosen sites and materials into SSR2030 progress, IFRS S2-style metrics and a printable decision pack. |
 
 **Highlights**
@@ -60,19 +60,31 @@ Screening results for the whole township under the default assumptions (editable
 
 These are screening estimates from this model, not SDP's reported inventory (see [Data and honesty notes](#data-and-honesty-notes)).
 
-## A 2-minute tour
+## The guided demo
 
-Press **Play 2-min guided demo** on the landing screen, or **Demo** in the top bar. The demo runs these steps:
+Press **Play guided demo** on the landing screen, or **Demo** in the top bar. The demo runs for about 2½ minutes in three parts, timed to a 3-minute pitch with a 20-second spoken intro:
+
+**1. SolarTwin: where solar should go**
 
 1. **Fly in.** The globe flies to Elmina and 2,188 real OpenStreetMap buildings rise in 3D, coloured by solar score.
 2. **Open Elmina Lakeside Mall and design its solar panels.** It holds 3.6 MWp, with a panel layout drawn in 3D and red flags such as the missing structural load certificate and the Power System Study.
 3. **Play the day.** Shadows sweep across the township and the light follows the sun.
-4. **Design a solar canopy** on a mall car park. It produces columns, footing concrete, pavers and steel.
-5. **Hand off to Canopy Materials.** The canopy quantities flow in and the sample paver bids are read.
-6. **Compare.** Greenwashing claims ("carbon-neutral" with no certificate) are flagged red, and a missing slip test fails the gate.
-7. **Shortlist.** The verified lowest-carbon paver within the cost-premium cap wins, with its abatement cost in RM per tCO₂e.
-8. **CREAM.** The top terrace rows join the pool, with roof-lease income per home.
-9. **Net-Zero dashboard.** It shows progress toward the SSR2030 40% cut and the decision pack.
+
+**2. Eco materials for the panels and the canopy**
+
+4. **Solar Panels.** The mall's array flows in and the sample PV datasheets are read.
+5. **Compare.** The lowest-carbon module fails the efficiency gate, and a "carbon-neutral" claim on an expired eco-label is flagged as greenwashing.
+6. **Build the panels.** The verified module with the highest total score within the cost cap wins, and the mall roof is rebuilt with it.
+7. **Design a solar canopy** on a mall car park. It produces columns, footing concrete, pavers and steel.
+8. **Canopy Materials.** The canopy quantities flow in and the sample paver bids are read.
+9. **Compare.** Greenwashing claims ("carbon-neutral" with no certificate) are flagged red, and a missing slip test fails the gate.
+10. **Build the paving.** The verified paver with the highest total score within the cost cap wins and is built into the canopy.
+
+**3. Money, with CREAM or without**
+
+11. **CREAM.** The top terrace rows join the pool. The caption shows the roof-lease income per home, with no upfront cost.
+12. **Not CREAM.** Back on the mall: commercial roofs can't join CREAM, so they cut their own bill instead. The caption shows its monthly savings and payback.
+13. **Township totals.** Yearly roof-lease income for homeowners and bill savings for businesses across Elmina.
 
 Press **Ctrl K** to open the Copilot. Try "show car parks at 5pm in December and play the day" or "join the top 10 terrace rows to the CREAM pool".
 
@@ -221,7 +233,7 @@ npm run build && npm start   # http://localhost:8787
   - **Verified carbon:** a valid, third-party-verified EPD to ISO 14025 / EN 15804.
   - **Greenwashing:** a claim with no valid EPD or eco-label (SIRIM, MyHIJAU), or a claim that cites an expired certificate.
   - **Normalisation:** per-tonne GWP is converted to the functional unit using the document's own mass per m² or density; PV carbon and prices declared per m², per Wp or per module are converted to per kWp using the datasheet's own efficiency and power.
-  - **Ranking:** gate first (a missing value is not a pass), then rank by carbon within the premium cap.
+  - **Ranking:** gate first (a missing value is not a pass). Among options with verified carbon within the premium cap, the highest total score wins. The score (0–100) is a weighted average of three parts, each set so the standard product scores 50: Eco = 50 + % carbon saved, Cost = 50 − % cost premium, and Performance = 50 + the % by which the headline spec (PV efficiency, paver or concrete strength) beats its limit. Default weights are Eco 40%, Cost 40%, Performance 20%, with sliders to re-weight live. The standard product is listed as an option (score 50) but never recommended.
 
 ## Testing and quality
 

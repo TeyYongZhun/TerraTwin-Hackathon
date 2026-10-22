@@ -4,7 +4,7 @@ import { ExtractionSchema, type Extraction } from '../src/lib/ecospec/schema';
 import { useCaseById } from '../src/data/ecospec/usecases';
 import { normalize, unitBasis } from '../src/lib/ecospec/normalize';
 import { assessEvidence } from '../src/lib/ecospec/evidence';
-import { type Candidate, rankCandidates } from '../src/lib/ecospec/rank';
+import { type Candidate, rankCandidates, standardOption } from '../src/lib/ecospec/rank';
 import { SAMPLE_DOCS } from '../scripts/sample-pack';
 
 const TODAY = new Date('2026-10-21T12:00:00');
@@ -97,27 +97,50 @@ describe('gate-then-rank', () => {
     expect(rows.find((r) => r.c.fileName === 'concrete-ecocrete-40r.pdf')!.eligible).toBe(false);
     expect(recommended!.abatement!).toBeCloseTo((318 - 278) / ((318 - 182) / 1000), 0);
   });
-  it('pavers: missing slip test fails the gate; premium cap switches the pick', () => {
+  it('pavers: missing slip test fails the gate; top score wins; weights and the premium cap switch the pick', () => {
     const uc = useCaseById('paver-80');
     const r25 = rankCandidates(uc, 1000, pack('paver-80'), { premiumCapPct: 25, today: TODAY });
     expect(r25.recommended?.c.fileName).toBe('paver-terrablock-ggbs.pdf');
+    // 37% less carbon for 22% more cost at 52 MPa narrowly outscores DuraBlock's 15% less for 6% more at 55 MPa.
+    expect(r25.recommended!.score!).toBeCloseTo(57.0, 0);
+    expect(r25.rows.find((r) => r.c.fileName === 'paver-durablock-classic.pdf')!.score!).toBeCloseTo(56.3, 0);
+    // A close call: equal weights hand the pick to DuraBlock.
+    const equal = rankCandidates(uc, 1000, pack('paver-80'), { premiumCapPct: 25, weights: { eco: 1, cost: 1, performance: 1 }, today: TODAY });
+    expect(equal.recommended?.c.fileName).toBe('paver-durablock-classic.pdf');
     expect(r25.rows.find((r) => r.c.fileName === 'paver-greenstep-eco.pdf')!.gate.find((g) => g.req.key === 'slip_resistance_ptv')!.status).toBe('missing');
     const r15 = rankCandidates(uc, 1000, pack('paver-80'), { premiumCapPct: 15, today: TODAY });
     expect(r15.recommended?.c.fileName).toBe('paver-durablock-classic.pdf');
   });
-  it('PV modules: lowest verified carbon within the cap wins; the lowest-carbon module fails the gate', () => {
+  it('PV modules: top score within the cap wins; the lowest-carbon module fails the gate and is not scored', () => {
     const uc = useCaseById('pv-module');
     const r25 = rankCandidates(uc, 737, pack('pv-module'), { premiumCapPct: 25, today: TODAY });
     expect(r25.recommended?.c.fileName).toBe('pv-heliomax-hjt600.pdf');
+    // HJT costs 21.9% more per kWp than mono PERC, but fits more power on the roof and loses less to heat, so the
+    // system costs about the same per kWh as TOPCon's; its bigger carbon cut and efficiency then win.
+    const topcon = r25.rows.find((r) => r.c.fileName === 'pv-solarispeak-topcon580.pdf')!;
+    expect(topcon.eligible).toBe(true);
+    expect(r25.recommended!.costRatio!).toBeLessThan(1);
+    expect(Math.abs(r25.recommended!.costRatio! - topcon.costRatio!)).toBeLessThan(0.01);
+    expect(topcon.score!).toBeLessThan(r25.recommended!.score!);
     const cdte = r25.rows.find((r) => r.c.fileName === 'pv-thincell-cdte545.pdf')!;
     expect(cdte.norm.gwp).toBeLessThan(r25.recommended!.norm.gwp!);
     expect(cdte.gate.map((g) => g.status)).toEqual(['fail', 'pass', 'missing']);
+    expect(cdte.score).toBeNull();
     const perc = r25.rows.find((r) => r.c.fileName === 'pv-everbright-perc550.pdf')!;
     expect(perc.gatePass).toBe(true);
     expect(perc.evidence.greenwash.map((g) => g.reason).join(' ')).toMatch(/expired/);
     expect(perc.eligible).toBe(false);
-    // HJT costs 21.9% more than the baseline, so a 20% cap hands the pick to TOPCon.
+    // The premium cap still applies to the module price: a 20% cap rules HJT out and hands the pick to TOPCon.
     expect(rankCandidates(uc, 737, pack('pv-module'), { premiumCapPct: 20, today: TODAY }).recommended?.c.fileName).toBe('pv-solarispeak-topcon580.pdf');
+  });
+  it('the standard product is a valid option that saves nothing, costs the baseline and is never recommended', () => {
+    for (const id of ['concrete-c30', 'paver-80', 'pv-module'] as const) {
+      const uc = useCaseById(id), std = standardOption(uc, 740);
+      expect(ExtractionSchema.safeParse(std.c.ex).success).toBe(true);
+      expect([std.savedPct, std.premiumPct, std.score, std.recommended]).toEqual([0, 0, 50, false]);
+      expect(std.tco2).toBeCloseTo((uc.baseline.gwp * 740) / 1000);
+      expect(std.totalCost).toBeCloseTo(uc.baseline.price * 740);
+    }
   });
   it('eligible candidates are ordered before ineligible ones', () => {
     const { rows } = rankCandidates(useCaseById('paver-80'), 500, pack('paver-80'), { premiumCapPct: 25, today: TODAY });
