@@ -62,7 +62,7 @@ ecospec.post('/extract', async (req, res) => {
 
   const cached = force ? null : readCache(sha256);
   if (cached) return res.json({ sha256, extraction: cached.extraction, source: 'cache', cacheSource: cached.source });
-  if (!aiEnabled()) return res.status(503).json({ error: 'Live extraction needs an Anthropic API key: add ANTHROPIC_API_KEY to terratwin-3d/.env and restart.', code: 'no_ai' });
+  if (!aiEnabled()) return res.status(503).json({ error: 'Live extraction needs an Anthropic API key: add ANTHROPIC_API_KEY to .env in the project root and restart.', code: 'no_ai' });
 
   try {
     const extraction = await extractWithClaude(buf.toString('base64'), fileName, useCaseId);
