@@ -12,7 +12,7 @@ export function PrintReport() {
   const td = 'border-b border-slate-200 py-1 pr-2 align-top';
   return (
     <div className="hidden bg-white p-8 text-[11px] text-slate-900 print:block">
-      <h1 className="text-2xl font-bold">TerraTwin AI: Net-Zero decision pack</h1>
+      <h1 className="text-2xl font-bold">TerraTwin: Net-Zero decision pack</h1>
       <p className="text-slate-600">City of Elmina · generated {new Date().toLocaleDateString('en-MY', { day: 'numeric', month: 'long', year: 'numeric' })} · screening-level estimates for discussion, not an engineering design or a sustainability disclosure.</p>
 
       <h2 className="mt-5 text-base font-bold">Summary</h2>

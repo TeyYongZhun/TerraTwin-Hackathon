@@ -24,7 +24,7 @@ export function Intro({ onDemo }: { onDemo: () => void }) {
               <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" /> Sime Darby Property · City of Elmina · PLANET challenge
             </motion.div>
             <motion.h1 initial={{ y: 16, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.25 }} className="text-5xl font-extrabold tracking-tight text-white md:text-7xl">
-              Terra<span className="text-grad">Twin</span> AI
+              Terra<span className="text-grad">Twin</span>
             </motion.h1>
             <motion.p initial={{ y: 16, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.35 }} className="mt-2 text-xl font-medium text-slate-200 md:text-2xl">
               The Net-Zero Township Copilot

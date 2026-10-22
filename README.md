@@ -1,6 +1,6 @@
-# TerraTwin AI 3D: the Net-Zero Township Copilot
+# TerraTwin: the Net-Zero Township Copilot
 
-[![TerraTwin AI: the Net-Zero Township Copilot](docs/cover.jpg)](https://terra-twin-hackathon.vercel.app)
+[![TerraTwin: the Net-Zero Township Copilot](docs/cover.jpg)](https://terra-twin-hackathon.vercel.app)
 
 ### ▶ Live demo: [terra-twin-hackathon.vercel.app](https://terra-twin-hackathon.vercel.app)
 
@@ -79,7 +79,7 @@ These are screening estimates from this model, not SDP's reported inventory (see
 
 ## Screenshots
 
-All taken on the [live site](https://terra-twin-hackathon.vercel.app).
+Screenshots of the app, the same flow you can click through on the [live demo](https://terra-twin-hackathon.vercel.app).
 
 <table>
   <tr>

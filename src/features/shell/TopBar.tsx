@@ -20,7 +20,7 @@ export function TopBar({ onDemo, onStopDemo }: { onDemo: () => void; onStopDemo:
       <div className="pointer-events-auto glass flex items-center gap-2.5 rounded-2xl px-3 py-2">
         <div className="grid h-8 w-8 place-items-center rounded-xl bg-gradient-to-br from-amber-300 via-orange-400 to-emerald-400 text-slate-950 shadow-lg"><Sun size={18} strokeWidth={2.5} /></div>
         <div className="leading-tight">
-          <div className="text-sm font-bold text-white">Terra<span className="text-grad">Twin</span> AI</div>
+          <div className="text-sm font-bold text-white">Terra<span className="text-grad">Twin</span></div>
           <div className="text-[10px] text-slate-400">Net-Zero Township Copilot · City of Elmina</div>
         </div>
       </div>

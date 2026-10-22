@@ -1,4 +1,4 @@
-/* TerraTwin AI API server. Dev: Vite proxies /api here. Production (`npm start`): also serves the built app. */
+/* TerraTwin API server. Dev: Vite proxies /api here. Production (`npm start`): also serves the built app. */
 import 'dotenv/config';
 import { existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
