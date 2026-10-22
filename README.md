@@ -10,7 +10,7 @@
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-06B6D4?logo=tailwindcss&logoColor=white)
 ![Express](https://img.shields.io/badge/Express-5-000000?logo=express&logoColor=white)
 ![Claude](https://img.shields.io/badge/Claude-Opus_5.5-D97757?logo=anthropic&logoColor=white)
-![Tests](https://img.shields.io/badge/tests-48_passing-2EA44F)
+![Tests](https://img.shields.io/badge/tests-49_passing-2EA44F)
 
 Built for the **PLANET hackathon** challenge on **City of Elmina** (Sime Darby Property, Shah Alam).
 
@@ -31,7 +31,7 @@ A live 3D digital twin that joins four modules into one story:
 
 | Module | Carbon | What it does |
 |---|---|---|
-| **SolarTwin** | Operational | Ranks 262 rooftops, 9 car parks and 1,821 landed-home rows (≈6,900 homes) by usable area, shading loss and daytime demand match. It flags missing data and engineering checks, designs solar carports, and shows residents their CREAM roof-lease income. |
+| **SolarTwin** | Operational | Ranks 262 building rooftops, 9 car parks and 1,821 landed-home rows (≈6,900 homes) by usable area, shading loss and daytime demand match. It flags missing data and engineering checks, designs solar carports, and shows residents their CREAM roof-lease income. |
 | **Solar Panels** | Both | Runs the supplier-document pipeline below on PV module datasheets: gates on efficiency, heat tolerance and degradation, scores each eligible module out of 100 on carbon cut, extra cost and efficiency, and builds the top-scoring module on the SolarTwin site, re-sizing its kWp, yield and CAPEX. |
 | **Canopy Materials** | Embodied | Reads car-park canopy supplier PDFs (footing concrete, pavers) with Claude: specs, prices, EPDs, certificates and every green claim, each with its verbatim quote and page. It gates by performance, flags greenwashing, normalises carbon to the functional unit, recommends the top-scoring verified option (carbon cut, extra cost and strength), and builds the chosen footings and paving into the canopy. |
 | **Net-Zero dashboard** | Both | Rolls the chosen sites and materials into SSR2030 progress, IFRS S2-style metrics and a printable decision pack. |
@@ -40,8 +40,10 @@ A live 3D digital twin that joins four modules into one story:
 
 - 🛰️ **A real township in 3D:** 2,188 OpenStreetMap buildings, coloured by solar score, with live sun, shadows and lighting for any day and hour.
 - 🧮 **Transparent screening:** every score is a weighted sum you can re-weight live, and every red flag comes with how to resolve it.
-- 🏗️ **Design → choose → build:** preview a rooftop array or carport in 3D, pick panels and materials from supplier documents, and confirm to build it on the site.
+- 🏗️ **Design → choose → build:** preview solar panels on a roof or a carport in 3D, pick panels and materials from supplier documents, and confirm to build it on the site.
 - 🔎 **Greenwashing detection with evidence:** each extracted value keeps its verbatim quote and page; deterministic rules, not the model, decide what counts as verified.
+- ⚖️ **A balanced, explainable pick:** every eligible panel or material gets a 0–100 score from carbon cut, cost and performance (the standard product scores 50), with sliders to re-weight it. You can still choose any option, with warnings.
+- 💰 **Money for everyone:** homes earn a CREAM roof lease with no upfront cost; buildings that can't join CREAM see their own bill savings and payback.
 - 🤖 **Copilot:** plain-English commands ("show car parks at 5pm in December and play the day") become actions on the map.
 - 📴 **Works offline:** with no API key, a bundled cache and offline writers keep the whole demo running.
 
@@ -51,14 +53,22 @@ Screening results for the whole township under the default assumptions (editable
 
 | Metric | Value |
 |---|---|
-| Sites screened | **2,092** (262 rooftops · 9 car parks · 1,821 terrace rows = 6,929 homes) |
+| Sites screened | **2,092** (262 building rooftops · 9 car parks · 1,821 terrace rows = 6,929 homes) |
 | Technical solar potential | **89.9 MWp**: 47.0 rooftops · 6.5 car parks · 36.4 homes |
 | Generation | **≈119.8 GWh / year** |
 | CO₂e avoidable | **≈88,700 t / year** at the 0.74 tCO₂e/MWh grid factor |
 | Share of the modelled baseline | **≈46%**, above the SSR2030 40% target if fully built |
 | Indicative CAPEX | **≈RM 297 million** |
+| Roof-lease income for homeowners (CREAM) | **≈RM 3.1 million / year**, about RM 37 per home per month at RM 7 per kWp per month |
+| Bill savings for businesses (rooftops + car parks) | **≈RM 29.4 million / year**, net of O&M |
 
-These are screening estimates from this model, not SDP's reported inventory (see [Data and honesty notes](#data-and-honesty-notes)).
+These are screening estimates from this model, not SDP's reported inventory (see [Data and honesty notes](#data-and-honesty-notes)), and they assume every screened site is built.
+
+**How the money is worked out** (`financeOf` in `src/lib/solar/evaluate.ts`):
+
+- **Homes (CREAM):** installed kWp × RM 7 per kWp per month × 12. Homeowners lease their roof and pay nothing upfront.
+- **Rooftops and car parks:** generation = kWp × 1,350 kWh/kWp × (1 − shading loss). The share used on site (from an hourly demand match) avoids the RM 0.47/kWh commercial tariff, the surplus earns the RM 0.20/kWh export credit, and 1% of CAPEX a year goes to O&M.
+- The guided demo's final step reads **≈RM 29.7 million**: by then it has built the top-scoring panel (HJT) on Elmina Lakeside Mall, which adds about RM 0.26 million a year.
 
 ## The guided demo
 
@@ -72,7 +82,7 @@ Press **Play guided demo** on the landing screen, or **Demo** in the top bar. Th
 
 **2. Eco materials for the panels and the canopy**
 
-4. **Solar Panels.** The mall's array flows in and the sample PV datasheets are read.
+4. **Solar Panels.** The mall's panel design flows in and the sample PV datasheets are read.
 5. **Compare.** The lowest-carbon module fails the efficiency gate, and a "carbon-neutral" claim on an expired eco-label is flagged as greenwashing.
 6. **Build the panels.** The verified module with the highest total score within the cost cap wins, and the mall roof is rebuilt with it.
 7. **Design a solar canopy** on a mall car park. It produces columns, footing concrete, pavers and steel.
@@ -86,13 +96,15 @@ Press **Play guided demo** on the landing screen, or **Demo** in the top bar. Th
 12. **Not CREAM.** Back on the mall: commercial roofs can't join CREAM, so they cut their own bill instead. The caption shows its monthly savings and payback.
 13. **Township totals.** Yearly roof-lease income for homeowners and bill savings for businesses across Elmina.
 
+Each beat shows a caption with a progress bar. Use the caption's buttons to **pause**, go **back** or **forward** a beat, or **stop** the demo.
+
 Press **Ctrl K** to open the Copilot. Try "show car parks at 5pm in December and play the day" or "join the top 10 terrace rows to the CREAM pool".
 
 **Try the full build flow yourself**
 
-1. Pick **Elmina Sales Gallery** in the ranking and press **Design solar panels in 3D**. The array appears as a preview.
+1. In the **Buildings** tab, pick **Elmina Sales Gallery** and press **Design solar panels in 3D**. The panels appear as a preview, which clears if you select another site before building.
 2. Press **Choose solar panels**, then **Add supplier documents → Load sample pack → Compare → Rank & shortlist**.
-3. Keep the recommendation (or click any other option) and press **Confirm & build in 3D**. The camera flies back and the roof is rebuilt with that module, with new kWp, yield and savings.
+3. Keep the recommendation (the highest total score), or click any other option, including the standard product, and press **Confirm & build in 3D**. The camera flies back and the roof is rebuilt with that module, with new kWp, yield and savings.
 4. On a car park, **Design solar canopy in 3D**, then confirm footings and pavers in **Canopy Materials** and panels in **Solar Panels**: each confirmation builds its own part of the canopy.
 
 ## Architecture
@@ -102,7 +114,7 @@ flowchart LR
   subgraph Browser["Browser · React 19 + MapLibre GL"]
     direction TB
     UI["SolarTwin map · Solar Panels · Canopy Materials · Net-Zero dashboard · Copilot"]
-    ENG["Deterministic engines<br/>sun, shadows, shading, panels, energy, scoring, red flags<br/>evidence, normalisation, gate-then-rank"]
+    ENG["Deterministic engines<br/>sun, shadows, shading, panels, energy, scoring, red flags<br/>evidence, normalisation, gate-then-score"]
     STORE["Zustand stores<br/>sites · designs · built modules · picks"]
     UI <--> STORE
     UI --> ENG
@@ -140,7 +152,7 @@ flowchart LR
 | AI | **Claude Opus 5.5** (`claude-opus-5-5`) via the **Anthropic TypeScript SDK** | Document extraction, memos, site briefs, Copilot |
 | Validation | **Zod 4** | Request bodies and the structured-output extraction schema |
 | Documents | **pdf-lib** | Generating the fictitious sample supplier pack |
-| Quality | **Vitest 5**, `tsc --noEmit` | 48 unit tests, strict typecheck |
+| Quality | **Vitest 5**, `tsc --noEmit` | 49 unit tests, strict typecheck |
 
 ## How we use AI
 
@@ -155,7 +167,7 @@ Claude is used in four places, each with a deterministic or offline fallback:
 
 **Guardrails**
 
-- **The model extracts; code decides.** Gates, evidence grades, greenwashing rules, unit conversion and ranking live in `src/lib/ecospec/` and are unit-tested. The memo prompt treats the ranking as final.
+- **The model extracts; code decides.** Gates, evidence grades, greenwashing rules, unit conversion, scoring and ranking live in `src/lib/ecospec/` and are unit-tested. The memo prompt treats the ranking as final.
 - **No guessing.** The extraction prompt forbids inferring missing values: an absent value is `null` plus a note, and a missing test value fails the gate.
 - **Auditable.** Hover any cell in **Compare evidence** to see the verbatim quote and page it came from.
 - **Verified means verified.** Only a valid, third-party-verified EPD to ISO 14025 / EN 15804 counts as verified carbon; expired eco-labels count as no evidence.
@@ -210,7 +222,7 @@ npm run build && npm start   # http://localhost:8787
 - **Annual shading loss.** 284 sun positions (the 21st of each month, 07:00–19:00), weighted by sin(alt)^1.15, tested against neighbouring buildings and tree canopies.
 - **Usable area and panels.** 1 m edge setback, rooftop plant zones excluded, 550 W modules laid along the roof's long axis, with walkways.
 - **Carports.** Double-row canopy strips over the bays, separated by drive aisles, with a bill of quantities.
-- **PV module choice.** Selecting a site does not draw its panels. "Design solar panels in 3D" on a rooftop or home (or "Design solar canopy in 3D" on a car park) draws a preview, cleared when another site is selected until something is confirmed, and "Choose solar panels" opens the **Solar Panels** tab with its kWp: the same four steps as Canopy Materials, for PV modules only. Confirming a module (the recommendation or any other option) rebuilds the site with it (`src/lib/solar/modules.ts`):
+- **PV module choice.** Selecting a site does not draw its panels. "Design solar panels in 3D" on a rooftop or home (or "Design solar canopy in 3D" on a car park) draws a preview, cleared when another site is selected until something is confirmed, and "Choose solar panels" opens the **Solar Panels** tab with its kWp: the same four steps as Canopy Materials, for PV modules only. Confirming a module (the recommendation, any other option, or the standard module) rebuilds the site with it (`src/lib/solar/modules.ts`):
   - kWp scales with module efficiency on the same usable area;
   - yield per kWp follows the temperature coefficient;
   - CAPEX adds the module's price premium, with area-bound costs spread over the extra watts.
@@ -234,11 +246,12 @@ npm run build && npm start   # http://localhost:8787
   - **Greenwashing:** a claim with no valid EPD or eco-label (SIRIM, MyHIJAU), or a claim that cites an expired certificate.
   - **Normalisation:** per-tonne GWP is converted to the functional unit using the document's own mass per m² or density; PV carbon and prices declared per m², per Wp or per module are converted to per kWp using the datasheet's own efficiency and power.
   - **Ranking:** gate first (a missing value is not a pass). Among options with verified carbon within the premium cap, the highest total score wins. The score (0–100) is a weighted average of three parts, each set so the standard product scores 50: Eco = 50 + % carbon saved, Cost = 50 − % cost premium, and Performance = 50 + the % by which the headline spec (PV efficiency, paver or concrete strength) beats its limit. Default weights are Eco 40%, Cost 40%, Performance 20%, with sliders to re-weight live. The standard product is listed as an option (score 50) but never recommended.
+  - **PV cost per kWh:** for panels, the Cost part scores what the whole system costs per kWh it generates, not the module price alone. A dearer module that fits more kWp on the same roof and loses less to heat can be cheaper per kWh (`costPerKwhRatio` in `src/lib/solar/modules.ts`). The premium cap still applies to the module price.
 
 ## Testing and quality
 
 ```bash
-npm test            # 48 Vitest tests in 5 files
+npm test            # 49 Vitest tests in 5 files
 npm run typecheck   # tsc --noEmit over app, server, scripts and tests
 ```
 
@@ -247,7 +260,7 @@ npm run typecheck   # tsc --noEmit over app, server, scripts and tests
 | `tests/solar.engine.test.ts` | Sun position, shadows and shading, roof layouts, carports and demand match |
 | `tests/solar.evaluate.test.ts` | Red flags, transparent scoring, finance and CREAM leases |
 | `tests/solar.modules.test.ts` | Building a site with a chosen PV module (kWp, heat tolerance, CAPEX) |
-| `tests/ecospec.test.ts` | Sample-pack cache (quotes are verbatim), unit normalisation, evidence and greenwashing rules, gate-then-rank |
+| `tests/ecospec.test.ts` | Sample-pack cache (quotes are verbatim), unit normalisation, evidence and greenwashing rules, gate-then-score, re-weighting and the premium cap, the standard product option |
 | `tests/store.preview.test.ts` | Designs stay previews until something is confirmed |
 
 ## Scripts
@@ -255,7 +268,7 @@ npm run typecheck   # tsc --noEmit over app, server, scripts and tests
 | Script | Purpose |
 |---|---|
 | `npm run dev` | API (tsx watch) + Vite dev server |
-| `npm test` | Vitest: solar engine, red flags, scoring, finance, PV module builds, supplier-document normalisation, evidence, ranking and design previews (48 tests) |
+| `npm test` | Vitest: solar engine, red flags, scoring, finance, PV module builds, supplier-document normalisation, evidence, scoring and ranking, and design previews (49 tests) |
 | `npm run typecheck` | `tsc --noEmit` over app, server, scripts and tests |
 | `npm run fetch:osm` | Re-download OSM data for the Elmina bbox (Overpass, with mirror fallback) |
 | `npm run precompute:solar` | Recompute per-site kWp / usable area / shading (about 2.5 min) |
