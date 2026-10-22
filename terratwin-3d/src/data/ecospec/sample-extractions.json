@@ -59,6 +59,30 @@
      "unit": null,
      "quote": null,
      "page": null
+    },
+    "module_power_w": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
+    },
+    "module_efficiency_pct": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
+    },
+    "temp_coefficient_pct_per_c": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
+    },
+    "annual_degradation_pct": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
     }
    },
    "price": {
@@ -165,6 +189,30 @@
      "unit": "%",
      "quote": "Recycled content: 40% (recycled concrete aggregate)",
      "page": 1
+    },
+    "module_power_w": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
+    },
+    "module_efficiency_pct": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
+    },
+    "temp_coefficient_pct_per_c": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
+    },
+    "annual_degradation_pct": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
     }
    },
    "price": {
@@ -278,6 +326,30 @@
      "unit": null,
      "quote": null,
      "page": null
+    },
+    "module_power_w": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
+    },
+    "module_efficiency_pct": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
+    },
+    "temp_coefficient_pct_per_c": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
+    },
+    "annual_degradation_pct": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
     }
    },
    "price": {
@@ -376,6 +448,30 @@
      "page": null
     },
     "recycled_content_pct": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
+    },
+    "module_power_w": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
+    },
+    "module_efficiency_pct": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
+    },
+    "temp_coefficient_pct_per_c": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
+    },
+    "annual_degradation_pct": {
      "value": null,
      "unit": null,
      "quote": null,
@@ -496,6 +592,30 @@
      "unit": "%",
      "quote": "Recycled aggregate content: 30%",
      "page": 1
+    },
+    "module_power_w": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
+    },
+    "module_efficiency_pct": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
+    },
+    "temp_coefficient_pct_per_c": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
+    },
+    "annual_degradation_pct": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
     }
    },
    "price": {
@@ -611,6 +731,30 @@
      "unit": null,
      "quote": null,
      "page": null
+    },
+    "module_power_w": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
+    },
+    "module_efficiency_pct": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
+    },
+    "temp_coefficient_pct_per_c": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
+    },
+    "annual_degradation_pct": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
     }
    },
    "price": {
@@ -708,6 +852,30 @@
      "page": null
     },
     "recycled_content_pct": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
+    },
+    "module_power_w": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
+    },
+    "module_efficiency_pct": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
+    },
+    "temp_coefficient_pct_per_c": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
+    },
+    "annual_degradation_pct": {
      "value": null,
      "unit": null,
      "quote": null,
@@ -826,6 +994,30 @@
      "unit": null,
      "quote": null,
      "page": null
+    },
+    "module_power_w": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
+    },
+    "module_efficiency_pct": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
+    },
+    "temp_coefficient_pct_per_c": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
+    },
+    "annual_degradation_pct": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
     }
    },
    "price": {
@@ -880,6 +1072,553 @@
     }
    ],
    "notes": []
+  }
+ },
+ "99a9e9343f45592288bd14aefbb02cd094b3a915f0a740923864ebdedb17d2bf": {
+  "fileName": "pv-solarispeak-topcon580.pdf",
+  "useCaseId": "pv-module",
+  "source": "sample-pack ground truth",
+  "extraction": {
+   "product_name": "SolarisPeak TOPCon 580 W",
+   "supplier": "Suria Teknologi Sdn Bhd",
+   "material_type": "pv_module",
+   "document_kinds": [
+    "datasheet",
+    "epd"
+   ],
+   "specs": {
+    "compressive_strength_mpa": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
+    },
+    "water_cement_ratio": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
+    },
+    "water_absorption_pct": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
+    },
+    "slip_resistance_ptv": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
+    },
+    "thickness_mm": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
+    },
+    "mass_per_m2_kg": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
+    },
+    "density_kg_m3": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
+    },
+    "recycled_content_pct": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
+    },
+    "module_power_w": {
+     "value": 580,
+     "unit": "W",
+     "quote": "Rated power (Pmax, STC): 580 W",
+     "page": 1
+    },
+    "module_efficiency_pct": {
+     "value": 22.5,
+     "unit": "%",
+     "quote": "Module efficiency: 22.5%",
+     "page": 1
+    },
+    "temp_coefficient_pct_per_c": {
+     "value": -0.3,
+     "unit": "%/°C",
+     "quote": "Temperature coefficient of Pmax: -0.30 %/°C",
+     "page": 1
+    },
+    "annual_degradation_pct": {
+     "value": 0.4,
+     "unit": "%/yr",
+     "quote": "Annual power degradation: 0.40% per year (30-year linear warranty)",
+     "page": 1
+    }
+   },
+   "price": {
+    "value": 0.51,
+    "unit": "RM/Wp",
+    "quote": "Price (ex-works Klang): RM 0.51 per Wp",
+    "page": 1
+   },
+   "warranty_years": {
+    "value": 30,
+    "unit": "years",
+    "quote": "Annual power degradation: 0.40% per year (30-year linear warranty)",
+    "page": 1
+   },
+   "gwp": {
+    "value": 430,
+    "declared_unit": "kgCO2e/kWp",
+    "lifecycle_stages": "A1-A3",
+    "basis": "epd",
+    "quote": "GWP-total (A1-A3): 430 kgCO2e per kWp",
+    "page": 2
+   },
+   "epd": {
+    "present": true,
+    "registration_number": "EPD-MY-PV-0612",
+    "programme_operator": "Malaysia Green Building EPD Programme (fictitious)",
+    "standards": [
+     "ISO 14025",
+     "EN 15804+A2"
+    ],
+    "third_party_verified": true,
+    "valid_until": "2029-06-30",
+    "quote": "EPD registration no.: EPD-MY-PV-0612",
+    "page": 2
+   },
+   "certifications": [],
+   "claims": [
+    {
+     "claim": "23% lower embodied carbon than mono PERC",
+     "quote": "23% lower embodied carbon than a mono PERC module (EPD-MY-PV-0612).",
+     "page": 1,
+     "cited_evidence": "EPD-MY-PV-0612"
+    }
+   ],
+   "notes": [
+    "Price is quoted per Wp; multiply by 1,000 for per kWp."
+   ]
+  }
+ },
+ "2f28ac3dc99b08ba94ba22d72cac627ab18615de252f1498d10f2d5cbc077b7c": {
+  "fileName": "pv-heliomax-hjt600.pdf",
+  "useCaseId": "pv-module",
+  "source": "sample-pack ground truth",
+  "extraction": {
+   "product_name": "HelioMax HJT 600 W",
+   "supplier": "HelioMax Solar Sdn Bhd",
+   "material_type": "pv_module",
+   "document_kinds": [
+    "datasheet",
+    "epd"
+   ],
+   "specs": {
+    "compressive_strength_mpa": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
+    },
+    "water_cement_ratio": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
+    },
+    "water_absorption_pct": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
+    },
+    "slip_resistance_ptv": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
+    },
+    "thickness_mm": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
+    },
+    "mass_per_m2_kg": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
+    },
+    "density_kg_m3": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
+    },
+    "recycled_content_pct": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
+    },
+    "module_power_w": {
+     "value": 600,
+     "unit": "W",
+     "quote": "Rated power (Pmax): 600 W",
+     "page": 1
+    },
+    "module_efficiency_pct": {
+     "value": 23.2,
+     "unit": "%",
+     "quote": "Module efficiency: 23.2%",
+     "page": 1
+    },
+    "temp_coefficient_pct_per_c": {
+     "value": -0.24,
+     "unit": "%/°C",
+     "quote": "Temperature coefficient (Pmax): -0.24 %/°C",
+     "page": 1
+    },
+    "annual_degradation_pct": {
+     "value": 0.25,
+     "unit": "%/yr",
+     "quote": "Linear degradation: 0.25% per year (30-year power warranty)",
+     "page": 1
+    }
+   },
+   "price": {
+    "value": 585,
+    "unit": "RM/kWp",
+    "quote": "Price: RM 585 per kWp",
+    "page": 1
+   },
+   "warranty_years": {
+    "value": 30,
+    "unit": "years",
+    "quote": "Linear degradation: 0.25% per year (30-year power warranty)",
+    "page": 1
+   },
+   "gwp": {
+    "value": 88,
+    "declared_unit": "kgCO2e/m2",
+    "lifecycle_stages": "A1-A3",
+    "basis": "epd",
+    "quote": "GWP-total (A1-A3): 88 kgCO2e per m2",
+    "page": 2
+   },
+   "epd": {
+    "present": true,
+    "registration_number": "EPD-MY-PV-0788",
+    "programme_operator": "Malaysia Green Building EPD Programme (fictitious)",
+    "standards": [
+     "ISO 14025",
+     "EN 15804+A2"
+    ],
+    "third_party_verified": true,
+    "valid_until": "2030-02-28",
+    "quote": "EPD registration no.: EPD-MY-PV-0788",
+    "page": 2
+   },
+   "certifications": [],
+   "claims": [
+    {
+     "claim": "Lowest-carbon module in the range",
+     "quote": "Our lowest-carbon module, made with a low-temperature HJT process (EPD-MY-PV-0788).",
+     "page": 1,
+     "cited_evidence": "EPD-MY-PV-0788"
+    }
+   ],
+   "notes": [
+    "GWP is declared per m2 of module area; convert to per kWp with the stated 23.2% module efficiency."
+   ]
+  }
+ },
+ "f5fa9c2c5edc98e4c37ac14198883d5e22d14bfe6c8144bede76875ed20c5c1b": {
+  "fileName": "pv-everbright-perc550.pdf",
+  "useCaseId": "pv-module",
+  "source": "sample-pack ground truth",
+  "extraction": {
+   "product_name": "EverBright EcoMax PERC 550 W",
+   "supplier": "EverBright Energy Trading",
+   "material_type": "pv_module",
+   "document_kinds": [
+    "brochure",
+    "certificate"
+   ],
+   "specs": {
+    "compressive_strength_mpa": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
+    },
+    "water_cement_ratio": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
+    },
+    "water_absorption_pct": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
+    },
+    "slip_resistance_ptv": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
+    },
+    "thickness_mm": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
+    },
+    "mass_per_m2_kg": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
+    },
+    "density_kg_m3": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
+    },
+    "recycled_content_pct": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
+    },
+    "module_power_w": {
+     "value": 550,
+     "unit": "W",
+     "quote": "Rated power: 550 W",
+     "page": 1
+    },
+    "module_efficiency_pct": {
+     "value": 21.3,
+     "unit": "%",
+     "quote": "Module efficiency: 21.3%",
+     "page": 1
+    },
+    "temp_coefficient_pct_per_c": {
+     "value": -0.35,
+     "unit": "%/°C",
+     "quote": "Temperature coefficient of Pmax: -0.35 %/°C",
+     "page": 1
+    },
+    "annual_degradation_pct": {
+     "value": 0.55,
+     "unit": "%/yr",
+     "quote": "Annual degradation: 0.55% per year",
+     "page": 1
+    }
+   },
+   "price": {
+    "value": 255,
+    "unit": "RM/module",
+    "quote": "Price: RM 255 per module",
+    "page": 1
+   },
+   "warranty_years": {
+    "value": null,
+    "unit": null,
+    "quote": null,
+    "page": null
+   },
+   "gwp": {
+    "value": 300,
+    "declared_unit": "kgCO2e/kWp",
+    "lifecycle_stages": null,
+    "basis": "self_declared",
+    "quote": "Carbon footprint: approx. 300 kgCO2e per kWp (internal estimate)",
+    "page": 1
+   },
+   "epd": {
+    "present": false,
+    "registration_number": null,
+    "programme_operator": null,
+    "standards": [],
+    "third_party_verified": null,
+    "valid_until": null,
+    "quote": null,
+    "page": null
+   },
+   "certifications": [
+    {
+     "scheme": "SIRIM_ECO_LABEL",
+     "name": "SIRIM Eco-Labelling Scheme",
+     "certificate_number": "ECO-SL-4410",
+     "valid_until": "2025-03-31",
+     "quote": "Valid until: 2025-03-31",
+     "page": 2
+    }
+   ],
+   "claims": [
+    {
+     "claim": "Carbon-neutral solar panels",
+     "quote": "CARBON-NEUTRAL solar panels for a greener tomorrow!",
+     "page": 1,
+     "cited_evidence": null
+    },
+    {
+     "claim": "Certified green (SIRIM Eco-Label)",
+     "quote": "Certified green: SIRIM Eco-Label ECO-SL-4410.",
+     "page": 1,
+     "cited_evidence": "SIRIM Eco-Label ECO-SL-4410"
+    }
+   ],
+   "notes": [
+    "No EPD; the carbon figure is an internal estimate.",
+    "The SIRIM Eco-Label certificate expired on 2025-03-31.",
+    "Price is per 550 W module."
+   ]
+  }
+ },
+ "a5805d94b3efd169813e70fa1bc68d245c2b24ec6fdba1e6be23632026868bf6": {
+  "fileName": "pv-thincell-cdte545.pdf",
+  "useCaseId": "pv-module",
+  "source": "sample-pack ground truth",
+  "extraction": {
+   "product_name": "ThinCell T7 CdTe 545 W",
+   "supplier": "ThinCell Malaysia Sdn Bhd",
+   "material_type": "pv_module",
+   "document_kinds": [
+    "datasheet",
+    "epd"
+   ],
+   "specs": {
+    "compressive_strength_mpa": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
+    },
+    "water_cement_ratio": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
+    },
+    "water_absorption_pct": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
+    },
+    "slip_resistance_ptv": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
+    },
+    "thickness_mm": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
+    },
+    "mass_per_m2_kg": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
+    },
+    "density_kg_m3": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
+    },
+    "recycled_content_pct": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
+    },
+    "module_power_w": {
+     "value": 545,
+     "unit": "W",
+     "quote": "Rated power (Pmax): 545 W",
+     "page": 1
+    },
+    "module_efficiency_pct": {
+     "value": 19.7,
+     "unit": "%",
+     "quote": "Module efficiency: 19.7%",
+     "page": 1
+    },
+    "temp_coefficient_pct_per_c": {
+     "value": -0.28,
+     "unit": "%/°C",
+     "quote": "Temperature coefficient of Pmax: -0.28 %/°C",
+     "page": 1
+    },
+    "annual_degradation_pct": {
+     "value": null,
+     "unit": null,
+     "quote": null,
+     "page": null
+    }
+   },
+   "price": {
+    "value": 520,
+    "unit": "RM/kWp",
+    "quote": "Price: RM 520 per kWp",
+    "page": 1
+   },
+   "warranty_years": {
+    "value": null,
+    "unit": null,
+    "quote": null,
+    "page": null
+   },
+   "gwp": {
+    "value": 240,
+    "declared_unit": "kgCO2e/kWp",
+    "lifecycle_stages": "A1-A3",
+    "basis": "epd",
+    "quote": "GWP-total (A1-A3): 240 kgCO2e per kWp",
+    "page": 2
+   },
+   "epd": {
+    "present": true,
+    "registration_number": "EPD-MY-PV-0455",
+    "programme_operator": "Malaysia Green Building EPD Programme (fictitious)",
+    "standards": [
+     "ISO 14025",
+     "EN 15804+A2"
+    ],
+    "third_party_verified": true,
+    "valid_until": "2028-09-30",
+    "quote": "EPD registration no.: EPD-MY-PV-0455",
+    "page": 2
+   },
+   "certifications": [],
+   "claims": [
+    {
+     "claim": "Lowest-carbon PV technology",
+     "quote": "The lowest-carbon PV technology we make (EPD-MY-PV-0455).",
+     "page": 1,
+     "cited_evidence": "EPD-MY-PV-0455"
+    }
+   ],
+   "notes": [
+    "No annual degradation figure: warranty terms are \"to be confirmed\".",
+    "Module efficiency of 19.7% is below the 21% project requirement."
+   ]
   }
  }
 }

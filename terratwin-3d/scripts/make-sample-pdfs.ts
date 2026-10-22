@@ -24,7 +24,7 @@ async function render(doc: SampleDoc): Promise<Uint8Array> {
   const font = await pdf.embedFont(StandardFonts.Helvetica), bold = await pdf.embedFont(StandardFonts.HelveticaBold);
   doc.pages.forEach((pg, i) => {
     const page = pdf.addPage([595, 842]);
-    const green = doc.useCaseId === 'paver-80' ? rgb(0.13, 0.45, 0.4) : rgb(0.2, 0.3, 0.5);
+    const green = doc.useCaseId === 'paver-80' ? rgb(0.13, 0.45, 0.4) : doc.useCaseId === 'pv-module' ? rgb(0.72, 0.42, 0.08) : rgb(0.2, 0.3, 0.5);
     page.drawRectangle({ x: 0, y: 772, width: 595, height: 70, color: green });
     page.drawText(doc.supplier, { x: 40, y: 810, size: 16, font: bold, color: rgb(1, 1, 1) });
     page.drawText(`${doc.product}  |  ${doc.docTitle}`, { x: 40, y: 790, size: 10, font, color: rgb(0.9, 0.95, 0.95) });

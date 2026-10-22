@@ -5,6 +5,7 @@ import { CATEGORY_LABEL, type Category, getTownship } from './township';
 import { type LngLat, type XY, dist, seeded } from '../lib/geo';
 import { type DemandClass, annualLoadKwh, demandClassOf } from '../lib/solar/energy';
 import { homeKwp } from '../lib/solar/panels';
+import type { PvSpec } from '../lib/solar/modules';
 import { DEFAULT_ASSUMPTIONS } from './assumptions';
 
 export type SiteKind = 'roof' | 'carpark' | 'home';
@@ -19,6 +20,8 @@ export interface Site {
   homes: number; kwp: number; usableArea: number; panels: number; shadingLoss: number;
   demandClass: DemandClass; annualLoad: number; attrs: SiteAttributes;
   substation: { name: string; distance: number } | null; nearName?: string; featured?: boolean;
+  /** PV module chosen in the site drawer; absent = the mono PERC screening baseline. */
+  module?: PvSpec;
 }
 
 type Pre = Record<string, { k: number; u: number; n: number; s: number }>;

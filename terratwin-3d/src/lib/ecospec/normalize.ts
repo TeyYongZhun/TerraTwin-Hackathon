@@ -1,6 +1,6 @@
-/* Converts declared carbon and price into the use case's functional unit (per m³ or per m²), or marks the value
-   "not comparable". Conversions use the document's own mass / density / thickness first; a use-case default is
-   used only as a last resort and is flagged as an assumption. */
+/* Converts declared carbon and price into the use case's functional unit (per m³, m² or kWp), or marks the value
+   "not comparable". Conversions use the document's own mass / density / thickness / efficiency / power first; a
+   use-case default is used only as a last resort and is flagged as an assumption. */
 import type { Extraction } from './schema';
 import type { UseCase } from '../../data/ecospec/usecases';
 
@@ -9,10 +9,13 @@ export interface Normalized {
   price: number | null; priceNote: string;
 }
 
-type Basis = 'm3' | 'm2' | 't' | 'kg' | null;
+type Basis = 'm3' | 'm2' | 't' | 'kg' | 'kWp' | 'Wp' | 'module' | null;
 export function unitBasis(unit: string | null): Basis {
   if (!unit) return null;
   const u = unit.toLowerCase().replace(/\s+/g, '').replace('³', '3').replace('²', '2');
+  if (/(per|\/)(1)?kwp|kwp$/.test(u)) return 'kWp';
+  if (/(per|\/)(1)?wp$/.test(u)) return 'Wp';
+  if (/(per|\/)(1)?(module|panel)/.test(u)) return 'module';
   if (/(per|\/)(1)?m3|m3$/.test(u)) return 'm3';
   if (/(per|\/)(1)?m2|m2$/.test(u)) return 'm2';
   if (/(per|\/)(1)?(t|tonne|ton|1000kg)$/.test(u) || /pertonne/.test(u)) return 't';
@@ -22,12 +25,27 @@ export function unitBasis(unit: string | null): Basis {
 
 const r = (v: number, d = 2) => Math.round(v * 10 ** d) / 10 ** d;
 
+/** A PV value per m² of module, per Wp or per module, converted to per kWp with the document's own efficiency / power. */
+function perKwp(v: number, basis: Basis, ex: Extraction, unit: 'RM' | 'kgCO₂e'): { value: number; note: string } | null {
+  const eff = ex.specs.module_efficiency_pct.value, w = ex.specs.module_power_w.value;
+  const q = unit === 'RM' ? `RM ${v}` : `${v} kgCO₂e`;
+  if (basis === 'kWp') return { value: v, note: 'Declared per kWp' };
+  if (basis === 'Wp') return { value: r(v * 1000), note: `${q}/Wp × 1,000` };
+  if (basis === 'm2' && eff) return { value: r(v / (eff / 100)), note: `${q}/m² ÷ ${eff}% efficiency (${r(eff / 100, 3)} kWp/m²)` };
+  if (basis === 'module' && w) return { value: r(v / (w / 1000)), note: `${q}/module ÷ ${w} W` };
+  return null;
+}
+
 export function normalize(ex: Extraction, uc: UseCase): Normalized {
   const s = ex.specs;
   let gwp: number | null = null, gwpNote = '', gwpAssumed = false;
   const basis = unitBasis(ex.gwp.declared_unit);
   const v = ex.gwp.value;
   if (v === null) gwpNote = 'No GWP stated';
+  else if (uc.fu === 'kWp') {
+    const k = perKwp(v, basis, ex, 'kgCO₂e');
+    if (k) { gwp = k.value; gwpNote = k.note; }
+  }
   else if (basis === uc.fu) { gwp = v; gwpNote = `Declared per ${uc.fuLabel}`; }
   else if (basis === 't' || basis === 'kg') {
     const perKg = basis === 't' ? v / 1000 : v;
@@ -48,6 +66,7 @@ export function normalize(ex: Extraction, uc: UseCase): Normalized {
   const pb = unitBasis(ex.price.unit);
   if (ex.price.value === null) priceNote = 'No price stated';
   else if (pb === uc.fu || pb === null) { price = ex.price.value; priceNote = pb ? `RM per ${uc.fuLabel}` : 'Unit not stated: assumed per functional unit'; }
+  else if (uc.fu === 'kWp' && perKwp(ex.price.value, pb, ex, 'RM')) { const k = perKwp(ex.price.value, pb, ex, 'RM')!; price = k.value; priceNote = k.note; }
   else priceNote = `Price unit "${ex.price.unit}" is not per ${uc.fuLabel}: not comparable`;
   return { gwp, gwpNote, gwpAssumed, price, priceNote };
 }

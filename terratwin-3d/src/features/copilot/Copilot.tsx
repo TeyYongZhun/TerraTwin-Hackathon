@@ -16,14 +16,14 @@ const SUGGESTIONS = [
   'Design a solar canopy on the biggest car park',
   'Prioritise low shading',
   'Join the top 10 terrace rows to the CREAM pool',
-  'Open EcoSpec for pavers',
+  'Open Canopy Materials for pavers',
   'Switch to night mode',
 ];
 
 interface Turn { q: string; reply: string; log: string[]; src: 'claude' | 'offline' }
 
 function context() {
-  const st = useApp.getState(), a = computeAnalytics(st.weights, st.assumptions);
+  const st = useApp.getState(), a = computeAnalytics(st.weights, st.assumptions, st.modules);
   const top = (k: 'roof' | 'carpark' | 'home', n: number) => a.byKind[k].slice(0, n).map((r) => ({ name: r.site.name, score: Math.round(r.ev.score), kwp: Math.round(r.site.kwp), shadingPct: +(r.site.shadingLoss * 100).toFixed(1) }));
   return {
     module: st.module, tab: st.tab, mapStyle: st.mapStyle, sun: st.sun, weights: st.weights, layers: st.layers,

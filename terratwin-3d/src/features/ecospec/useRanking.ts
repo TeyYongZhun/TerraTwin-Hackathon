@@ -1,11 +1,11 @@
 import { useMemo } from 'react';
-import { useEco } from '../../store/ecospec';
+import { useSpecStore } from '../../store/ecospec';
 import { useCaseById } from '../../data/ecospec/usecases';
 import { rankCandidates } from '../../lib/ecospec/rank';
 
 /** Ranked candidates for the current use case, quantity and premium cap. */
 export function useRanking() {
-  const { useCaseId, qty, docs, premiumCap } = useEco();
+  const { useCaseId, qty, docs, premiumCap } = useSpecStore()();
   const uc = useCaseById(useCaseId), q = qty[useCaseId];
   return useMemo(() => {
     const cands = docs.filter((d) => d.useCaseId === useCaseId && d.status === 'done' && d.extraction)

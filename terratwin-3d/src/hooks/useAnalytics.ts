@@ -3,6 +3,7 @@ import { useMemo } from 'react';
 import { type Site, type SiteKind, getSites } from '../data/sites';
 import type { Assumptions } from '../data/assumptions';
 import { type Evaluation, type Weights, evaluateSite } from '../lib/solar/evaluate';
+import { type PvSpec, withModule } from '../lib/solar/modules';
 import { useApp } from '../store/app';
 
 export interface Ranked { site: Site; ev: Evaluation; rank: number; /** percentile within its kind, 1 = best */ pct: number }
@@ -14,9 +15,11 @@ export interface Analytics {
 
 const KINDS: SiteKind[] = ['roof', 'carpark', 'home'];
 
-export function computeAnalytics(w: Weights, A: Assumptions): Analytics {
+/** `modules` re-sizes each site for the PV module it is built with, so kWp, yield and finance follow the choice. */
+export function computeAnalytics(w: Weights, A: Assumptions, modules: Record<string, PvSpec> = {}): Analytics {
   const byKind: Record<SiteKind, Ranked[]> = { roof: [], carpark: [], home: [] }, byId = new Map<string, Ranked>();
-  for (const site of getSites().sites) {
+  for (const base of getSites().sites) {
+    const site = modules[base.id] ? withModule(base, modules[base.id]) : base;
     const r: Ranked = { site, ev: evaluateSite(site, w, A), rank: 0, pct: 0 };
     byKind[site.kind].push(r);
     byId.set(site.id, r);
@@ -37,6 +40,6 @@ export function computeAnalytics(w: Weights, A: Assumptions): Analytics {
 }
 
 export function useAnalytics(): Analytics {
-  const weights = useApp((s) => s.weights), assumptions = useApp((s) => s.assumptions);
-  return useMemo(() => computeAnalytics(weights, assumptions), [weights, assumptions]);
+  const weights = useApp((s) => s.weights), assumptions = useApp((s) => s.assumptions), modules = useApp((s) => s.modules);
+  return useMemo(() => computeAnalytics(weights, assumptions, modules), [weights, assumptions, modules]);
 }

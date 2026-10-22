@@ -2,6 +2,7 @@
 import type { Site } from '../../data/sites';
 import type { Assumptions } from '../../data/assumptions';
 import { type DemandMatch, demandMatch } from './energy';
+import { capexPerKwp, heatFactor, moduleOf } from './modules';
 
 export interface Weights { capacity: number; shading: number; demand: number; readiness: number }
 export const DEFAULT_WEIGHTS: Weights = { capacity: 35, shading: 25, demand: 25, readiness: 15 };
@@ -29,7 +30,7 @@ export function redFlags(s: Site): { flags: RedFlag[]; passed: string[] } {
     else if (a.roofAge !== null) passed.push(`Roof age ${a.roofAge} yrs (<15)`);
   } else {
     add({ id: 'bomba', severity: 'medium', area: 'Safety', title: 'BOMBA fire-appliance access & canopy clearance check', resolve: 'Confirm fire-engine routes and ≥3.6 m clearance; keep hydrants and access lanes clear of columns.' });
-    if (!a.geotech) add({ id: 'geotech', severity: 'medium', area: 'Data', title: 'Soil investigation (SI) report missing', resolve: 'Commission SI boreholes to size column footings (feeds EcoSpec concrete quantities).' });
+    if (!a.geotech) add({ id: 'geotech', severity: 'medium', area: 'Data', title: 'Soil investigation (SI) report missing', resolve: 'Commission SI boreholes to size column footings (feeds the Canopy Materials concrete quantities).' });
     else passed.push('Soil investigation report available');
   }
   const kwac = s.kwp / 1.25;
@@ -56,7 +57,7 @@ export function redFlags(s: Site): { flags: RedFlag[]; passed: string[] } {
 }
 
 export function evaluateSite(s: Site, w: Weights, A: Assumptions): Evaluation {
-  const annualKwh = s.kwp * A.specificYield * (1 - s.shadingLoss);
+  const annualKwh = s.kwp * A.specificYield * heatFactor(moduleOf(s.module)) * (1 - s.shadingLoss);
   const load = s.kind === 'home' ? s.homes * A.homeLoadKwh : s.annualLoad;
   const dm = demandMatch(annualKwh, load, s.demandClass);
   const { flags, passed } = redFlags(s);
@@ -79,12 +80,11 @@ export function evaluateSite(s: Site, w: Weights, A: Assumptions): Evaluation {
 }
 
 export function financeOf(s: Site, annualKwh: number, selfConsumption: number, A: Assumptions): Finance {
-  const tco2 = (annualKwh / 1000) * A.gridEF;
+  const tco2 = (annualKwh / 1000) * A.gridEF, capex = s.kwp * capexPerKwp(s.kind, moduleOf(s.module), A);
   if (s.kind === 'home') {
-    const capex = s.kwp * A.capexHome, perHomeKwp = s.kwp / Math.max(1, s.homes);
+    const perHomeKwp = s.kwp / Math.max(1, s.homes);
     return { capex, annualSavings: annualKwh * A.exportRate, paybackYears: NaN, tco2, monthlyLease: perHomeKwp * A.creamLeaseRate, perHomeKwp };
   }
-  const capex = s.kwp * (s.kind === 'carpark' ? A.capexCanopy : A.capexRoof);
   const annualSavings = annualKwh * selfConsumption * A.tariffCommercial + annualKwh * (1 - selfConsumption) * A.exportRate - (capex * A.omPct) / 100;
   return { capex, annualSavings, paybackYears: annualSavings > 0 ? capex / annualSavings : Infinity, tco2 };
 }

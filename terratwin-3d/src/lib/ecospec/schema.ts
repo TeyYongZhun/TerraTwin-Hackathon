@@ -11,13 +11,14 @@ export const NumField = z.object({
   ...Evidence,
 });
 
-export const SPEC_KEYS = ['compressive_strength_mpa', 'water_cement_ratio', 'water_absorption_pct', 'slip_resistance_ptv', 'thickness_mm', 'mass_per_m2_kg', 'density_kg_m3', 'recycled_content_pct'] as const;
+export const SPEC_KEYS = ['compressive_strength_mpa', 'water_cement_ratio', 'water_absorption_pct', 'slip_resistance_ptv', 'thickness_mm', 'mass_per_m2_kg', 'density_kg_m3', 'recycled_content_pct',
+  'module_power_w', 'module_efficiency_pct', 'temp_coefficient_pct_per_c', 'annual_degradation_pct'] as const;
 export type SpecKey = (typeof SPEC_KEYS)[number];
 
 export const ExtractionSchema = z.object({
   product_name: z.string(),
   supplier: z.string(),
-  material_type: z.enum(['ready_mix_concrete', 'interlocking_paver', 'other']),
+  material_type: z.enum(['ready_mix_concrete', 'interlocking_paver', 'pv_module', 'other']),
   document_kinds: z.array(z.enum(['datasheet', 'epd', 'certificate', 'quotation', 'test_report', 'brochure'])).describe('All document kinds contained in the file'),
   specs: z.object({
     compressive_strength_mpa: NumField.describe('28-day characteristic or mean compressive strength'),
@@ -28,12 +29,16 @@ export const ExtractionSchema = z.object({
     mass_per_m2_kg: NumField.describe('Mass per square metre of laid product'),
     density_kg_m3: NumField,
     recycled_content_pct: NumField,
+    module_power_w: NumField.describe('PV modules: rated power Pmax at STC, in W'),
+    module_efficiency_pct: NumField.describe('PV modules: module efficiency at STC, in %'),
+    temp_coefficient_pct_per_c: NumField.describe('PV modules: temperature coefficient of Pmax in %/°C, as a signed number (e.g. -0.30)'),
+    annual_degradation_pct: NumField.describe('PV modules: linear annual power degradation in % per year'),
   }),
-  price: NumField.describe('Unit price in RM; unit such as "RM/m3" or "RM/m2"'),
+  price: NumField.describe('Unit price in RM; unit such as "RM/m3", "RM/m2", "RM/kWp", "RM/Wp" or "RM/module"'),
   warranty_years: NumField,
   gwp: z.object({
     value: z.number().nullable().describe('Global warming potential (kgCO2e) as declared'),
-    declared_unit: z.string().nullable().describe('Declared/functional unit of the GWP, e.g. "kgCO2e/m3", "kgCO2e/t", "kgCO2e/m2"'),
+    declared_unit: z.string().nullable().describe('Declared/functional unit of the GWP, e.g. "kgCO2e/m3", "kgCO2e/t", "kgCO2e/m2", "kgCO2e/kWp", "kgCO2e/module"'),
     lifecycle_stages: z.string().nullable().describe('Life-cycle modules covered, e.g. "A1-A3"'),
     basis: z.enum(['epd', 'self_declared', 'none']).describe('epd = from an Environmental Product Declaration; self_declared = supplier estimate / own LCA / marketing; none = not stated'),
     ...Evidence,

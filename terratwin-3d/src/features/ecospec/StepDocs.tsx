@@ -2,7 +2,7 @@
 import { useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import { ArrowRight, FileText, LoaderCircle, PackageOpen, ShieldAlert, ShieldCheck, Trash2, Upload } from 'lucide-react';
-import { useEco, type DocItem } from '../../store/ecospec';
+import { type DocItem, useSpecStore } from '../../store/ecospec';
 import { useApp } from '../../store/app';
 import { useCaseById } from '../../data/ecospec/usecases';
 import { assessEvidence } from '../../lib/ecospec/evidence';
@@ -10,14 +10,14 @@ import { addFiles, loadSamplePack } from './extract';
 import { Btn, Pill, cx } from '../../components/ui';
 
 export function StepDocs() {
-  const { useCaseId, docs, forceLive, set, removeDoc } = useEco();
+  const store = useSpecStore(), { useCaseId, docs, forceLive, set, removeDoc } = store();
   const ai = useApp((s) => s.ai);
   const uc = useCaseById(useCaseId);
   const mine = docs.filter((d) => d.useCaseId === useCaseId);
   const done = mine.filter((d) => d.status === 'done').length, busy = mine.some((d) => d.status === 'reading' || d.status === 'queued');
   const input = useRef<HTMLInputElement>(null);
   const [drag, setDrag] = useState(false);
-  const onFiles = (list: FileList | null) => { if (list?.length) addFiles([...list], useCaseId); };
+  const onFiles = (list: FileList | null) => { if (list?.length) addFiles(store, [...list], useCaseId); };
 
   return (
     <div className="px-6 py-5">
@@ -47,8 +47,8 @@ export function StepDocs() {
         </div>
         <div className="flex flex-col justify-center gap-2 rounded-2xl bg-gradient-to-br from-emerald-400/10 to-sky-400/10 p-4 ring-1 ring-white/10">
           <div className="flex items-center gap-2 text-sm font-semibold text-white"><PackageOpen size={16} className="text-emerald-300" /> Sample supplier pack</div>
-          <p className="text-[11px] text-slate-400">4 fictitious {uc.short.toLowerCase()} bids, each built to trigger a different check: verified EPD, greenwashing, expired certificate, unit conversion, missing test.</p>
-          <Btn tone="leaf" onClick={() => loadSamplePack(useCaseId)} disabled={busy}>Load sample pack</Btn>
+          <p className="text-[11px] text-slate-400">4 fictitious {uc.id === 'pv-module' ? uc.short : uc.short.toLowerCase()} bids, each built to trigger a different check: verified EPD, greenwashing, expired certificate, unit conversion, missing test.</p>
+          <Btn tone="leaf" onClick={() => loadSamplePack(store, useCaseId)} disabled={busy}>Load sample pack</Btn>
         </div>
       </div>
 
@@ -68,7 +68,9 @@ export function StepDocs() {
 function DocCard({ d, onRemove }: { d: DocItem; onRemove: () => void }) {
   const ex = d.extraction, ev = ex ? assessEvidence(ex) : null;
   const chips: [string, string | null][] = ex ? [
-    ['Strength', ex.specs.compressive_strength_mpa.value !== null ? `${ex.specs.compressive_strength_mpa.value} MPa` : null],
+    d.useCaseId === 'pv-module'
+      ? ['Efficiency', ex.specs.module_efficiency_pct.value !== null ? `${ex.specs.module_efficiency_pct.value}%` : null]
+      : ['Strength', ex.specs.compressive_strength_mpa.value !== null ? `${ex.specs.compressive_strength_mpa.value} MPa` : null],
     ['GWP', ex.gwp.value !== null ? `${ex.gwp.value} ${ex.gwp.declared_unit ?? ''}` : null],
     ['Price', ex.price.value !== null ? `RM ${ex.price.value} ${ex.price.unit?.replace('RM', '') ?? ''}` : null],
     ['EPD', ex.epd.present ? ex.epd.registration_number ?? 'yes' : null],

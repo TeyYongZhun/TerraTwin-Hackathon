@@ -62,5 +62,37 @@
   "product": "TerraBlock GGBS 80 mm",
   "sha256": "0854033bcf13e2b3e4ddffb7c835c0b02bc7d7bd75a06926e9600afb7167f27c",
   "bytes": 4895
+ },
+ {
+  "file": "pv-solarispeak-topcon580.pdf",
+  "useCaseId": "pv-module",
+  "supplier": "Suria Teknologi Sdn Bhd",
+  "product": "SolarisPeak TOPCon 580 W",
+  "sha256": "99a9e9343f45592288bd14aefbb02cd094b3a915f0a740923864ebdedb17d2bf",
+  "bytes": 4900
+ },
+ {
+  "file": "pv-heliomax-hjt600.pdf",
+  "useCaseId": "pv-module",
+  "supplier": "HelioMax Solar Sdn Bhd",
+  "product": "HelioMax HJT 600 W",
+  "sha256": "2f28ac3dc99b08ba94ba22d72cac627ab18615de252f1498d10f2d5cbc077b7c",
+  "bytes": 4763
+ },
+ {
+  "file": "pv-everbright-perc550.pdf",
+  "useCaseId": "pv-module",
+  "supplier": "EverBright Energy Trading",
+  "product": "EverBright EcoMax PERC 550 W",
+  "sha256": "f5fa9c2c5edc98e4c37ac14198883d5e22d14bfe6c8144bede76875ed20c5c1b",
+  "bytes": 4481
+ },
+ {
+  "file": "pv-thincell-cdte545.pdf",
+  "useCaseId": "pv-module",
+  "supplier": "ThinCell Malaysia Sdn Bhd",
+  "product": "ThinCell T7 CdTe 545 W",
+  "sha256": "a5805d94b3efd169813e70fa1bc68d245c2b24ec6fdba1e6be23632026868bf6",
+  "bytes": 4742
  }
 ]

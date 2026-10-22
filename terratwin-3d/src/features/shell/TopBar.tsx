@@ -1,11 +1,12 @@
 /* Top bar: brand, module switcher, map look, AI status, copilot and guided demo. */
-import { Command, Gauge, Moon, Play, Recycle, Satellite, Sun, Grid3x3, Square } from 'lucide-react';
+import { Command, Gauge, Moon, Play, Recycle, Satellite, SolarPanel, Sun, Grid3x3, Square } from 'lucide-react';
 import { type MapStyleId, type Module, useAppPick } from '../../store/app';
 import { cx } from '../../components/ui';
 
 const MODULES: { id: Module; label: string; icon: typeof Sun; tint: string }[] = [
   { id: 'solar', label: 'SolarTwin', icon: Sun, tint: 'text-amber-300' },
-  { id: 'ecospec', label: 'EcoSpec AI', icon: Recycle, tint: 'text-emerald-300' },
+  { id: 'panelspec', label: 'Solar Panels', icon: SolarPanel, tint: 'text-orange-300' },
+  { id: 'ecospec', label: 'Canopy Materials', icon: Recycle, tint: 'text-emerald-300' },
   { id: 'dashboard', label: 'Net-Zero', icon: Gauge, tint: 'text-sky-300' },
 ];
 const LOOKS: { id: MapStyleId; label: string; icon: typeof Sun }[] = [

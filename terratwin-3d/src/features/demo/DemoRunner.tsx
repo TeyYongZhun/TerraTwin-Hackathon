@@ -20,19 +20,21 @@ const STEPS: { title: string; sub: string; ms: number; run: () => void }[] = [
     title: '2,092 real rooftops, car parks and homes, screened for solar', sub: 'OpenStreetMap footprints of City of Elmina, coloured by solar score', ms: 6500,
     run: () => { app().set({ module: 'solar', tab: 'roof', selectedId: null, mapStyle: 'satellite', playing: false, listQuery: '', hideBlockers: false }); app().setSun({ month: 10, day: 21, hour: 10.5 }); flyHome(); },
   },
-  { title: 'Elmina Lakeside Mall: 3.6 MWp on one roof', sub: 'Usable area after setbacks and rooftop plant, panels laid out in 3D, red flag: structural load certificate missing', ms: 8500, run: () => app().select(MALL, 'roof') },
+  { title: 'Elmina Lakeside Mall: 3.6 MWp on one roof', sub: 'Usable area after setbacks and rooftop plant, panels laid out in 3D, red flag: structural load certificate missing', ms: 8500,
+    // Selecting a roof no longer draws its panels, so the demo designs the array once the camera has arrived.
+    run: () => { app().select(MALL, 'roof'); setTimeout(() => { app().toggleLayer('panels', true); app().toggleIn('arrays', MALL, true); }, 1800); } },
   { title: 'Live shadows from sunrise to sunset', sub: 'Shading loss is modelled from every neighbouring building and tree, all year round', ms: 9000, run: () => { app().setSun({ month: 12, day: 21, hour: 7.6 }); app().set({ playing: true }); } },
   {
     title: 'Car parks become solar canopies', sub: 'Carport strips, columns and footings: a bill of quantities for the next step', ms: 8000,
     run: () => { app().set({ playing: false }); app().setSun({ month: 10, day: 21, hour: 11 }); app().select(CARPARK, 'carpark'); setTimeout(() => app().toggleIn('canopies', CARPARK, true), 1800); },
   },
   {
-    title: 'EcoSpec AI reads the supplier PDFs', sub: 'Specs, prices, EPDs, certificates and every green claim, each with its page-level evidence', ms: 7500,
+    title: 'Canopy Materials reads the supplier PDFs', sub: 'Specs, prices, EPDs, certificates and every green claim, each with its page-level evidence', ms: 7500,
     run: () => {
       const s = getSites().byId.get(CARPARK)!, q = siteGeometry(s).canopy!.quantities;
       app().set({ module: 'ecospec', handoff: { siteId: s.id, siteName: s.name, paverAreaM2: q.paverAreaM2, footingConcreteM3: q.footingConcreteM3, columns: q.columns, steelTonnes: q.steelTonnes } });
       eco().set({ useCaseId: 'paver-80', step: 2, docs: eco().docs.filter((d) => d.useCaseId !== 'paver-80'), memo: '', memoSrc: null });
-      loadSamplePack('paver-80');
+      loadSamplePack(useEco, 'paver-80');
     },
   },
   { title: 'Greenwashing flagged automatically', sub: '"Carbon-neutral" with no certificate is flagged red. Expired eco-labels don\'t count. Missing tests fail the gate.', ms: 8500, run: () => eco().set({ step: 3 }) },
@@ -43,13 +45,14 @@ const STEPS: { title: string; sub: string; ms: number; run: () => void }[] = [
       const cands = e.docs.filter((d) => d.useCaseId === 'paver-80' && d.extraction).map((d) => ({ id: d.id, fileName: d.fileName, ex: d.extraction!, source: d.source ?? 'cache' }));
       const rec = rankCandidates(uc, qty, cands, { premiumCapPct: e.premiumCap }).recommended;
       e.set({ step: 4 });
-      if (rec) app().addPick({ useCaseId: uc.id, useCase: uc.title, product: rec.c.ex.product_name, supplier: rec.c.ex.supplier, quantity: qty, unit: uc.fuLabel, tco2: rec.tco2 ?? 0, tco2Saved: rec.savedT ?? 0, cost: rec.totalCost ?? 0, premium: rec.premiumPct ?? 0 });
+      if (rec) app().setCanopySpec(CARPARK, 'paver', rec.c.ex.product_name);
+      if (rec) app().addPick({ useCaseId: `${uc.id}:${CARPARK}`, useCase: `${uc.title} · ${getSites().byId.get(CARPARK)!.name}`, product: rec.c.ex.product_name, supplier: rec.c.ex.supplier, quantity: qty, unit: uc.fuLabel, tco2: rec.tco2 ?? 0, tco2Saved: rec.savedT ?? 0, cost: rec.totalCost ?? 0, premium: rec.premiumPct ?? 0 });
     },
   },
   {
     title: 'Residents earn from their roofs through CREAM', sub: 'Top-ranked terrace rows join the pool: roofs light up with panels and lease income per home', ms: 8000,
     run: () => {
-      const st = app(), homes = computeAnalytics(st.weights, st.assumptions).byKind.home.slice(0, 12);
+      const st = app(), homes = computeAnalytics(st.weights, st.assumptions, st.modules).byKind.home.slice(0, 12);
       st.set({ module: 'solar', tab: 'home' });
       for (const r of homes) st.toggleIn('creamPool', r.site.id, true);
       st.select(homes[0].site.id, 'home');

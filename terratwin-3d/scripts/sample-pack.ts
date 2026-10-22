@@ -1,17 +1,22 @@
-/* FICTITIOUS sample supplier pack for EcoSpec AI. Every supplier, product, certificate and EPD number here is invented
+/* FICTITIOUS sample supplier pack for the Canopy Materials and Solar Panels tabs. Every supplier, product, certificate and EPD number here is invented
    test data. Each document is designed to exercise one check: verified winner, greenwashing, baseline, expired
-   certificate + failed grade, self-declared carbon, per-tonne normalisation, missing slip test, fully verified. */
+   certificate + failed grade, self-declared carbon, per-tonne normalisation, missing slip test, fully verified;
+   for PV modules: per-Wp price, per-m² EPD normalisation, carbon-neutral greenwashing + expired eco-label, and a
+   lowest-carbon module that fails the efficiency gate and has no degradation figure. */
 import type { Extraction, NumFieldT } from '../src/lib/ecospec/schema';
 
 export interface Row { label: string; value: string }
 export interface Page { title: string; rows?: Row[]; paras?: string[]; /** brochure style: headline claims above the table */ parasFirst?: boolean }
-export interface SampleDoc { file: string; useCaseId: 'concrete-c30' | 'paver-80'; supplier: string; product: string; docTitle: string; pages: Page[]; build: (q: Q) => Extraction }
+export interface SampleDoc { file: string; useCaseId: 'concrete-c30' | 'paver-80' | 'pv-module'; supplier: string; product: string; docTitle: string; pages: Page[]; build: (q: Q) => Extraction }
 type Q = { row: (label: string) => { quote: string; page: number }; para: (start: string) => { quote: string; page: number } };
 
 const OP = 'Malaysia Green Building EPD Programme (fictitious)';
 const none: NumFieldT = { value: null, unit: null, quote: null, page: null };
 const num = (q: Q, label: string, value: number, unit: string): NumFieldT => ({ value, unit, ...q.row(label) });
-const noSpecs = { compressive_strength_mpa: none, water_cement_ratio: none, water_absorption_pct: none, slip_resistance_ptv: none, thickness_mm: none, mass_per_m2_kg: none, density_kg_m3: none, recycled_content_pct: none };
+const noSpecs = {
+  compressive_strength_mpa: none, water_cement_ratio: none, water_absorption_pct: none, slip_resistance_ptv: none, thickness_mm: none, mass_per_m2_kg: none, density_kg_m3: none, recycled_content_pct: none,
+  module_power_w: none, module_efficiency_pct: none, temp_coefficient_pct_per_c: none, annual_degradation_pct: none,
+};
 const noEpd = { present: false, registration_number: null, programme_operator: null, standards: [], third_party_verified: null, valid_until: null, quote: null, page: null };
 
 export const SAMPLE_DOCS: SampleDoc[] = [
@@ -266,6 +271,145 @@ export const SAMPLE_DOCS: SampleDoc[] = [
       certifications: [{ scheme: 'SIRIM_ECO_LABEL', name: 'SIRIM Eco-Label', certificate_number: 'ECO-SL-3108', valid_until: '2028-11-30', ...q.row('SIRIM Eco-Label certificate no.') }],
       claims: [{ claim: '37% lower embodied carbon than standard pavers', ...q.para('37% lower'), cited_evidence: 'EPD-MY-PAV-1305' }],
       notes: [],
+    }),
+  },
+  {
+    file: 'pv-solarispeak-topcon580.pdf', useCaseId: 'pv-module', supplier: 'Suria Teknologi Sdn Bhd', product: 'SolarisPeak TOPCon 580 W', docTitle: 'Module Datasheet & EPD Summary',
+    pages: [
+      { title: 'Module Datasheet', rows: [
+        { label: 'Product', value: 'SolarisPeak TOPCon 580 W monofacial module' },
+        { label: 'Cell technology', value: 'n-type TOPCon, 144 half-cut cells' },
+        { label: 'Rated power (Pmax, STC)', value: '580 W' },
+        { label: 'Module efficiency', value: '22.5%' },
+        { label: 'Temperature coefficient of Pmax', value: '-0.30 %/°C' },
+        { label: 'Annual power degradation', value: '0.40% per year (30-year linear warranty)' },
+        { label: 'Dimensions', value: '2278 x 1134 x 30 mm' },
+        { label: 'Weight', value: '28.5 kg' },
+        { label: 'Price (ex-works Klang)', value: 'RM 0.51 per Wp' },
+      ], paras: ['23% lower embodied carbon than a mono PERC module (EPD-MY-PV-0612).'] },
+      { title: 'Environmental Product Declaration - Summary', rows: [
+        { label: 'EPD registration no.', value: 'EPD-MY-PV-0612' },
+        { label: 'Programme operator', value: OP },
+        { label: 'Standards', value: 'ISO 14025 and EN 15804+A2' },
+        { label: 'Verification', value: 'Independent third-party verified' },
+        { label: 'Declared unit', value: '1 kWp of PV module' },
+        { label: 'GWP-total (A1-A3)', value: '430 kgCO2e per kWp' },
+        { label: 'Valid until', value: '2029-06-30' },
+      ] },
+    ],
+    build: (q) => ({
+      product_name: 'SolarisPeak TOPCon 580 W', supplier: 'Suria Teknologi Sdn Bhd', material_type: 'pv_module', document_kinds: ['datasheet', 'epd'],
+      specs: { ...noSpecs, module_power_w: num(q, 'Rated power (Pmax, STC)', 580, 'W'), module_efficiency_pct: num(q, 'Module efficiency', 22.5, '%'), temp_coefficient_pct_per_c: num(q, 'Temperature coefficient of Pmax', -0.3, '%/°C'), annual_degradation_pct: num(q, 'Annual power degradation', 0.4, '%/yr') },
+      price: num(q, 'Price (ex-works Klang)', 0.51, 'RM/Wp'), warranty_years: num(q, 'Annual power degradation', 30, 'years'),
+      gwp: { value: 430, declared_unit: 'kgCO2e/kWp', lifecycle_stages: 'A1-A3', basis: 'epd', ...q.row('GWP-total (A1-A3)') },
+      epd: { present: true, registration_number: 'EPD-MY-PV-0612', programme_operator: OP, standards: ['ISO 14025', 'EN 15804+A2'], third_party_verified: true, valid_until: '2029-06-30', ...q.row('EPD registration no.') },
+      certifications: [],
+      claims: [{ claim: '23% lower embodied carbon than mono PERC', ...q.para('23% lower'), cited_evidence: 'EPD-MY-PV-0612' }],
+      notes: ['Price is quoted per Wp; multiply by 1,000 for per kWp.'],
+    }),
+  },
+  {
+    file: 'pv-heliomax-hjt600.pdf', useCaseId: 'pv-module', supplier: 'HelioMax Solar Sdn Bhd', product: 'HelioMax HJT 600 W', docTitle: 'Datasheet & EPD',
+    pages: [
+      { title: 'Module Datasheet', rows: [
+        { label: 'Product', value: 'HelioMax HJT 600 W bifacial glass-glass module' },
+        { label: 'Cell technology', value: 'n-type heterojunction (HJT), 120 half-cut cells' },
+        { label: 'Rated power (Pmax)', value: '600 W' },
+        { label: 'Module efficiency', value: '23.2%' },
+        { label: 'Temperature coefficient (Pmax)', value: '-0.24 %/°C' },
+        { label: 'Linear degradation', value: '0.25% per year (30-year power warranty)' },
+        { label: 'Dimensions', value: '2278 x 1134 x 30 mm' },
+        { label: 'Weight', value: '32.0 kg' },
+        { label: 'Price', value: 'RM 585 per kWp' },
+      ], paras: ['Our lowest-carbon module, made with a low-temperature HJT process (EPD-MY-PV-0788).'] },
+      { title: 'Environmental Product Declaration', rows: [
+        { label: 'EPD registration no.', value: 'EPD-MY-PV-0788' },
+        { label: 'Programme operator', value: OP },
+        { label: 'Standards', value: 'ISO 14025 and EN 15804+A2' },
+        { label: 'Verification', value: 'Independent third-party verified' },
+        { label: 'Declared unit', value: '1 m2 of module area' },
+        { label: 'GWP-total (A1-A3)', value: '88 kgCO2e per m2' },
+        { label: 'Valid until', value: '2030-02-28' },
+      ] },
+    ],
+    build: (q) => ({
+      product_name: 'HelioMax HJT 600 W', supplier: 'HelioMax Solar Sdn Bhd', material_type: 'pv_module', document_kinds: ['datasheet', 'epd'],
+      specs: { ...noSpecs, module_power_w: num(q, 'Rated power (Pmax)', 600, 'W'), module_efficiency_pct: num(q, 'Module efficiency', 23.2, '%'), temp_coefficient_pct_per_c: num(q, 'Temperature coefficient (Pmax)', -0.24, '%/°C'), annual_degradation_pct: num(q, 'Linear degradation', 0.25, '%/yr') },
+      price: num(q, 'Price', 585, 'RM/kWp'), warranty_years: num(q, 'Linear degradation', 30, 'years'),
+      gwp: { value: 88, declared_unit: 'kgCO2e/m2', lifecycle_stages: 'A1-A3', basis: 'epd', ...q.row('GWP-total (A1-A3)') },
+      epd: { present: true, registration_number: 'EPD-MY-PV-0788', programme_operator: OP, standards: ['ISO 14025', 'EN 15804+A2'], third_party_verified: true, valid_until: '2030-02-28', ...q.row('EPD registration no.') },
+      certifications: [],
+      claims: [{ claim: 'Lowest-carbon module in the range', ...q.para('Our lowest-carbon'), cited_evidence: 'EPD-MY-PV-0788' }],
+      notes: ['GWP is declared per m2 of module area; convert to per kWp with the stated 23.2% module efficiency.'],
+    }),
+  },
+  {
+    file: 'pv-everbright-perc550.pdf', useCaseId: 'pv-module', supplier: 'EverBright Energy Trading', product: 'EverBright EcoMax PERC 550 W', docTitle: 'Product Brochure',
+    pages: [
+      { title: 'EverBright EcoMax - clean energy, zero guilt', parasFirst: true, paras: [
+        'CARBON-NEUTRAL solar panels for a greener tomorrow!',
+        'Certified green: SIRIM Eco-Label ECO-SL-4410.',
+      ], rows: [
+        { label: 'Cell technology', value: 'p-type mono PERC, 144 half-cut cells' },
+        { label: 'Rated power', value: '550 W' },
+        { label: 'Module efficiency', value: '21.3%' },
+        { label: 'Temperature coefficient of Pmax', value: '-0.35 %/°C' },
+        { label: 'Annual degradation', value: '0.55% per year' },
+        { label: 'Carbon footprint', value: 'approx. 300 kgCO2e per kWp (internal estimate)' },
+        { label: 'Price', value: 'RM 255 per module' },
+      ] },
+      { title: 'Certificate', rows: [
+        { label: 'Scheme', value: 'SIRIM Eco-Labelling Scheme' },
+        { label: 'Certificate no.', value: 'ECO-SL-4410' },
+        { label: 'Product category', value: 'Photovoltaic modules' },
+        { label: 'Valid until', value: '2025-03-31' },
+      ] },
+    ],
+    build: (q) => ({
+      product_name: 'EverBright EcoMax PERC 550 W', supplier: 'EverBright Energy Trading', material_type: 'pv_module', document_kinds: ['brochure', 'certificate'],
+      specs: { ...noSpecs, module_power_w: num(q, 'Rated power', 550, 'W'), module_efficiency_pct: num(q, 'Module efficiency', 21.3, '%'), temp_coefficient_pct_per_c: num(q, 'Temperature coefficient of Pmax', -0.35, '%/°C'), annual_degradation_pct: num(q, 'Annual degradation', 0.55, '%/yr') },
+      price: num(q, 'Price', 255, 'RM/module'), warranty_years: none,
+      gwp: { value: 300, declared_unit: 'kgCO2e/kWp', lifecycle_stages: null, basis: 'self_declared', ...q.row('Carbon footprint') },
+      epd: noEpd,
+      certifications: [{ scheme: 'SIRIM_ECO_LABEL', name: 'SIRIM Eco-Labelling Scheme', certificate_number: 'ECO-SL-4410', valid_until: '2025-03-31', ...q.row('Valid until') }],
+      claims: [
+        { claim: 'Carbon-neutral solar panels', ...q.para('CARBON-NEUTRAL'), cited_evidence: null },
+        { claim: 'Certified green (SIRIM Eco-Label)', ...q.para('Certified green'), cited_evidence: 'SIRIM Eco-Label ECO-SL-4410' },
+      ],
+      notes: ['No EPD; the carbon figure is an internal estimate.', 'The SIRIM Eco-Label certificate expired on 2025-03-31.', 'Price is per 550 W module.'],
+    }),
+  },
+  {
+    file: 'pv-thincell-cdte545.pdf', useCaseId: 'pv-module', supplier: 'ThinCell Malaysia Sdn Bhd', product: 'ThinCell T7 CdTe 545 W', docTitle: 'Datasheet & EPD Summary',
+    pages: [
+      { title: 'Module Datasheet', rows: [
+        { label: 'Technology', value: 'Thin-film cadmium telluride (CdTe), glass-glass' },
+        { label: 'Rated power (Pmax)', value: '545 W' },
+        { label: 'Module efficiency', value: '19.7%' },
+        { label: 'Temperature coefficient of Pmax', value: '-0.28 %/°C' },
+        { label: 'Dimensions', value: '2300 x 1200 x 35 mm' },
+        { label: 'Weight', value: '35.5 kg' },
+        { label: 'Price', value: 'RM 520 per kWp' },
+      ], paras: ['The lowest-carbon PV technology we make (EPD-MY-PV-0455).', 'Degradation warranty terms for the Malaysian market to be confirmed.'] },
+      { title: 'Environmental Product Declaration - Summary', rows: [
+        { label: 'EPD registration no.', value: 'EPD-MY-PV-0455' },
+        { label: 'Programme operator', value: OP },
+        { label: 'Standards', value: 'ISO 14025 and EN 15804+A2' },
+        { label: 'Verification', value: 'Independent third-party verified' },
+        { label: 'Declared unit', value: '1 kWp of PV module' },
+        { label: 'GWP-total (A1-A3)', value: '240 kgCO2e per kWp' },
+        { label: 'Valid until', value: '2028-09-30' },
+      ] },
+    ],
+    build: (q) => ({
+      product_name: 'ThinCell T7 CdTe 545 W', supplier: 'ThinCell Malaysia Sdn Bhd', material_type: 'pv_module', document_kinds: ['datasheet', 'epd'],
+      specs: { ...noSpecs, module_power_w: num(q, 'Rated power (Pmax)', 545, 'W'), module_efficiency_pct: num(q, 'Module efficiency', 19.7, '%'), temp_coefficient_pct_per_c: num(q, 'Temperature coefficient of Pmax', -0.28, '%/°C') },
+      price: num(q, 'Price', 520, 'RM/kWp'), warranty_years: none,
+      gwp: { value: 240, declared_unit: 'kgCO2e/kWp', lifecycle_stages: 'A1-A3', basis: 'epd', ...q.row('GWP-total (A1-A3)') },
+      epd: { present: true, registration_number: 'EPD-MY-PV-0455', programme_operator: OP, standards: ['ISO 14025', 'EN 15804+A2'], third_party_verified: true, valid_until: '2028-09-30', ...q.row('EPD registration no.') },
+      certifications: [],
+      claims: [{ claim: 'Lowest-carbon PV technology', ...q.para('The lowest-carbon'), cited_evidence: 'EPD-MY-PV-0455' }],
+      notes: ['No annual degradation figure: warranty terms are "to be confirmed".', 'Module efficiency of 19.7% is below the 21% project requirement.'],
     }),
   },
 ];

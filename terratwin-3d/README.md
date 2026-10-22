@@ -1,11 +1,12 @@
 # TerraTwin AI 3D: the Net-Zero Township Copilot
 
-A live 3D digital twin of **City of Elmina** (Sime Darby Property, Shah Alam) for the PLANET hackathon challenge. It joins two modules into one story:
+A live 3D digital twin of **City of Elmina** (Sime Darby Property, Shah Alam) for the PLANET hackathon challenge. It joins four modules into one story:
 
 | Module | Carbon | What it does |
 |---|---|---|
 | **SolarTwin** | Operational | Ranks 262 rooftops, 9 car parks and 1,821 landed-home rows (≈6,900 homes) by usable area, shading loss and daytime demand match. It flags missing data and engineering checks, designs solar carports, and shows residents their CREAM roof-lease income. |
-| **EcoSpec AI** | Embodied | Reads supplier PDFs with Claude: specs, prices, EPDs, certificates and every green claim, each with its verbatim quote and page. It gates by performance, flags greenwashing, normalises carbon to the functional unit, and shortlists verified low-carbon options. |
+| **Solar Panels** | Both | Runs the supplier-document pipeline below on PV module datasheets: gates on efficiency, heat tolerance and degradation, ranks by verified embodied carbon per kWp, and builds the chosen module on the SolarTwin site, re-sizing its kWp, yield and CAPEX. |
+| **Canopy Materials** | Embodied | Reads car-park canopy supplier PDFs (footing concrete, pavers) with Claude: specs, prices, EPDs, certificates and every green claim, each with its verbatim quote and page. It gates by performance, flags greenwashing, normalises carbon to the functional unit, shortlists verified low-carbon options, and builds the chosen footings and paving into the canopy. |
 | **Net-Zero dashboard** | Both | Rolls the chosen sites and materials into SSR2030 progress, IFRS S2-style metrics and a printable decision pack. |
 
 ## Run it
@@ -36,10 +37,10 @@ npm run build && npm start   # http://localhost:8787
 Press **Play 2-min guided demo** on the landing screen, or **Demo** in the top bar. The demo runs these steps:
 
 1. **Fly in.** The globe flies to Elmina and 2,188 real OpenStreetMap buildings rise in 3D, coloured by solar score.
-2. **Open Elmina Lakeside Mall.** It holds 3.6 MWp, with a panel layout drawn in 3D and red flags such as the missing structural load certificate and the Power System Study.
+2. **Open Elmina Lakeside Mall and design its array.** It holds 3.6 MWp, with a panel layout drawn in 3D and red flags such as the missing structural load certificate and the Power System Study.
 3. **Play the day.** Shadows sweep across the township and the light follows the sun.
 4. **Design a solar canopy** on a mall car park. It produces columns, footing concrete, pavers and steel.
-5. **Hand off to EcoSpec AI.** The canopy quantities flow in and the sample paver bids are read.
+5. **Hand off to Canopy Materials.** The canopy quantities flow in and the sample paver bids are read.
 6. **Compare.** Greenwashing claims ("carbon-neutral" with no certificate) are flagged red, and a missing slip test fails the gate.
 7. **Shortlist.** The verified lowest-carbon paver within the cost-premium cap wins, with its abatement cost in RM per tCO₂e.
 8. **CREAM.** The top terrace rows join the pool, with roof-lease income per home.
@@ -56,6 +57,10 @@ Press **Ctrl K** to open the Copilot. Try "show car parks at 5pm in December and
 - **Annual shading loss.** 284 sun positions (the 21st of each month, 07:00–19:00), weighted by sin(alt)^1.15, tested against neighbouring buildings and tree canopies.
 - **Usable area and panels.** 1 m edge setback, rooftop plant zones excluded, 550 W modules laid along the roof's long axis, with walkways.
 - **Carports.** Double-row canopy strips over the bays, separated by drive aisles, with a bill of quantities.
+- **PV module choice.** Selecting a site does not draw its panels. "Design solar array in 3D" on a rooftop or home (or "Design solar canopy in 3D" on a car park) draws the array, and "Choose solar panels" opens the **Solar Panels** tab with its kWp: the same four steps as Canopy Materials, for PV modules only. Confirming a module (the recommendation or any other option) rebuilds the site with it (`src/lib/solar/modules.ts`):
+  - kWp scales with module efficiency on the same usable area;
+  - yield per kWp follows the temperature coefficient;
+  - CAPEX adds the module's price premium, with area-bound costs spread over the extra watts.
 - **Demand match.** Σmin(PV, load) / ΣPV over a typical day, using a load profile per building type.
 - **Score.** A transparent weighted score with live weight sliders.
 - **Red flags.** Each comes with a "how to resolve" line:
@@ -65,7 +70,7 @@ Press **Ctrl K** to open the Copilot. Try "show car parks at 5pm in December and
   - CREAM eligibility.
 - **Precompute.** `scripts/precompute-solar.ts` precomputes kWp, usable area and shading for every footprint. Detailed layouts are computed live for the selected site.
 
-**EcoSpec AI** (`server/routes/ecospec.ts` and `src/lib/ecospec/`):
+**Supplier-document pipeline: Solar Panels and Canopy Materials** (`server/routes/ecospec.ts` and `src/lib/ecospec/`):
 
 - **Extraction.** Each PDF goes to Claude as a base64 `document` block.
   - Structured outputs (`client.beta.messages.parse` with a Zod schema) return every value with its verbatim quote and page. Citations can't be combined with structured outputs, so the evidence is carried in the schema itself.
@@ -102,7 +107,7 @@ Press **Ctrl K** to open the Copilot. Try "show car parks at 5pm in December and
 | Script | Purpose |
 |---|---|
 | `npm run dev` | API (tsx watch) + Vite dev server |
-| `npm test` | Vitest: solar engine, red flags, scoring, finance, EcoSpec normalisation, evidence and ranking (36 tests) |
+| `npm test` | Vitest: solar engine, red flags, scoring, finance, PV module builds, supplier-document normalisation, evidence and ranking (44 tests) |
 | `npm run typecheck` | `tsc --noEmit` over app, server, scripts and tests |
 | `npm run fetch:osm` | Re-download OSM data for the Elmina bbox (Overpass, with mirror fallback) |
 | `npm run precompute:solar` | Recompute per-site kWp / usable area / shading (about 2.5 min) |

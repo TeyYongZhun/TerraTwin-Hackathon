@@ -28,7 +28,7 @@ export function matchSite(query: string, kind?: SiteKind): { site: Site; score: 
 }
 export const findSite = (query: string, kind?: SiteKind) => matchSite(query, kind)?.site ?? null;
 
-const topOf = (kind: SiteKind) => { const st = useApp.getState(); return computeAnalytics(st.weights, st.assumptions).byKind[kind]; };
+const topOf = (kind: SiteKind) => { const st = useApp.getState(); return computeAnalytics(st.weights, st.assumptions, st.modules).byKind[kind]; };
 
 /** Execute actions in order; returns a human-readable line per action. */
 export function runActions(actions: CopilotAction[]): string[] {
@@ -66,7 +66,7 @@ export function runActions(actions: CopilotAction[]): string[] {
       case 'open_module':
         app.set({ module: a.input.module });
         if (a.input.module === 'ecospec' && a.input.use_case) useEco.getState().set({ useCaseId: a.input.use_case });
-        log.push(`Opened ${a.input.module === 'solar' ? 'SolarTwin' : a.input.module === 'ecospec' ? 'EcoSpec AI' : 'the Net-Zero dashboard'}`); break;
+        log.push(`Opened ${a.input.module === 'solar' ? 'SolarTwin' : a.input.module === 'panelspec' ? 'Solar Panels' : a.input.module === 'ecospec' ? 'Canopy Materials' : 'the Net-Zero dashboard'}`); break;
       case 'add_to_portfolio': {
         const s = findSite(a.input.query);
         if (!s) { log.push(`Couldn't find "${a.input.query}"`); break; }
@@ -108,6 +108,7 @@ export function offlineCopilot(text: string): { actions: CopilotAction[]; reply:
   const join = t.match(/(?:join|enrol|enroll|add)\D*(\d+)\D*(?:home|terrace|row|house)/);
   if (join || /join .*cream|cream pool/.test(t)) actions.push({ name: 'join_cream_pool', input: { top_n: join ? +join[1] : 10 } });
   else if (/canop|carport/.test(t) && /design|build|add|put/.test(t)) actions.push({ name: 'design_canopy', input: { query: findSite(text, 'carpark')?.name ?? (/big|large/.test(t) ? 'biggest' : 'best') } });
+  else if (/panelspec|pv (module|panel)|solar panel|panel spec/.test(t)) actions.push({ name: 'open_module', input: { module: 'panelspec', use_case: null } });
   else if (/ecospec|material|concrete|paver|supplier|greenwash/.test(t)) actions.push({ name: 'open_module', input: { module: 'ecospec', use_case: /paver|paving/.test(t) ? 'paver-80' : /concrete/.test(t) ? 'concrete-c30' : null } });
   else if (/dashboard|net.?zero|ssr|ifrs/.test(t) && !/add/.test(t)) actions.push({ name: 'open_module', input: { module: 'dashboard', use_case: null } });
   else {
@@ -117,5 +118,5 @@ export function offlineCopilot(text: string): { actions: CopilotAction[]; reply:
     else if (site && (/fly|go to|zoom|show|open|select|take me/.test(t) || norm(text).length < 40)) actions.push({ name: 'fly_to_site', input: { query: site.name } });
     else if (kind) actions.push({ name: 'show_ranking', input: { kind, search: null, hide_blockers: /no blocker|without blocker|ready/.test(t) } });
   }
-  return { actions, reply: actions.length ? '' : 'Offline mode understands map, time, ranking, canopy, CREAM, EcoSpec and dashboard commands. Add an API key for free-form requests.' };
+  return { actions, reply: actions.length ? '' : 'Offline mode understands map, time, ranking, canopy, CREAM, solar panels, canopy materials and dashboard commands. Add an API key for free-form requests.' };
 }
