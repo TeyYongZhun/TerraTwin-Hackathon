@@ -21,7 +21,7 @@ const STEPS: { title: string; sub: string; ms: number; run: () => void }[] = [
     run: () => { app().set({ module: 'solar', tab: 'roof', selectedId: null, mapStyle: 'satellite', playing: false, listQuery: '', hideBlockers: false }); app().setSun({ month: 10, day: 21, hour: 10.5 }); flyHome(); },
   },
   { title: 'Elmina Lakeside Mall: 3.6 MWp on one roof', sub: 'Usable area after setbacks and rooftop plant, panels laid out in 3D, red flag: structural load certificate missing', ms: 8500,
-    // Selecting a roof no longer draws its panels, so the demo designs the array once the camera has arrived.
+    // Selecting a roof no longer draws its panels, so the demo designs its panels once the camera has arrived.
     run: () => { app().select(MALL, 'roof'); setTimeout(() => { app().toggleLayer('panels', true); app().toggleIn('arrays', MALL, true); }, 1800); } },
   { title: 'Live shadows from sunrise to sunset', sub: 'Shading loss is modelled from every neighbouring building and tree, all year round', ms: 9000, run: () => { app().setSun({ month: 12, day: 21, hour: 7.6 }); app().set({ playing: true }); } },
   {

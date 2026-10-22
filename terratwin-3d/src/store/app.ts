@@ -124,6 +124,17 @@ export const useApp = create<AppState>((set, get) => ({
   },
 }));
 
+/** Whether a site is really built: panels confirmed in Solar Panels, or footings / paving in Canopy Materials. */
+export const isBuilt = (st: { modules: Record<string, PvSpec>; canopySpecs: Record<string, CanopySpec> }, id: string) => !!st.modules[id] || !!st.canopySpecs[id];
+
+// A designed array or canopy is only a preview of the selected site: moving to another site (or closing the drawer)
+// discards it unless the site has been built. Watching the store catches every way the selection changes.
+useApp.subscribe((st, prev) => {
+  const old = prev.selectedId;
+  if (!old || old === st.selectedId || isBuilt(st, old) || !(st.arrays.includes(old) || st.canopies.includes(old))) return;
+  useApp.setState({ arrays: st.arrays.filter((x) => x !== old), canopies: st.canopies.filter((x) => x !== old) });
+});
+
 /** Subscribe to just these keys (shallow-compared), so a component doesn't re-render on every sun-playback frame. */
 export function useAppPick<K extends keyof AppState>(...keys: K[]): Pick<AppState, K> {
   return useApp(useShallow((s) => {

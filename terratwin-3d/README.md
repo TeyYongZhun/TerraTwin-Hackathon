@@ -37,7 +37,7 @@ npm run build && npm start   # http://localhost:8787
 Press **Play 2-min guided demo** on the landing screen, or **Demo** in the top bar. The demo runs these steps:
 
 1. **Fly in.** The globe flies to Elmina and 2,188 real OpenStreetMap buildings rise in 3D, coloured by solar score.
-2. **Open Elmina Lakeside Mall and design its array.** It holds 3.6 MWp, with a panel layout drawn in 3D and red flags such as the missing structural load certificate and the Power System Study.
+2. **Open Elmina Lakeside Mall and design its solar panels.** It holds 3.6 MWp, with a panel layout drawn in 3D and red flags such as the missing structural load certificate and the Power System Study.
 3. **Play the day.** Shadows sweep across the township and the light follows the sun.
 4. **Design a solar canopy** on a mall car park. It produces columns, footing concrete, pavers and steel.
 5. **Hand off to Canopy Materials.** The canopy quantities flow in and the sample paver bids are read.
@@ -57,7 +57,7 @@ Press **Ctrl K** to open the Copilot. Try "show car parks at 5pm in December and
 - **Annual shading loss.** 284 sun positions (the 21st of each month, 07:00–19:00), weighted by sin(alt)^1.15, tested against neighbouring buildings and tree canopies.
 - **Usable area and panels.** 1 m edge setback, rooftop plant zones excluded, 550 W modules laid along the roof's long axis, with walkways.
 - **Carports.** Double-row canopy strips over the bays, separated by drive aisles, with a bill of quantities.
-- **PV module choice.** Selecting a site does not draw its panels. "Design solar array in 3D" on a rooftop or home (or "Design solar canopy in 3D" on a car park) draws the array, and "Choose solar panels" opens the **Solar Panels** tab with its kWp: the same four steps as Canopy Materials, for PV modules only. Confirming a module (the recommendation or any other option) rebuilds the site with it (`src/lib/solar/modules.ts`):
+- **PV module choice.** Selecting a site does not draw its panels. "Design solar panels in 3D" on a rooftop or home (or "Design solar canopy in 3D" on a car park) draws a preview, cleared when another site is selected until something is confirmed, and "Choose solar panels" opens the **Solar Panels** tab with its kWp: the same four steps as Canopy Materials, for PV modules only. Confirming a module (the recommendation or any other option) rebuilds the site with it (`src/lib/solar/modules.ts`):
   - kWp scales with module efficiency on the same usable area;
   - yield per kWp follows the temperature coefficient;
   - CAPEX adds the module's price premium, with area-bound costs spread over the extra watts.

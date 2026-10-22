@@ -187,7 +187,7 @@ export function MapView() {
   }, [ready, hoverId]);
 
   // Rooftop / home PV arrays: designed arrays + portfolio + CREAM pool, under the PV panels layer. Selecting a site
-  // does not draw its panels (the building stays as it is until "Design solar array in 3D"); re-selecting a site that
+  // does not draw its panels (the building stays as it is until "Design solar panels in 3D"); re-selecting a site that
   // has panels replays their build-out.
   useEffect(() => {
     const map = mapRef.current;
