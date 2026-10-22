@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "description": "TerraTwin AI 3D — Net-Zero Township Copilot for City of Elmina (SolarTwin + EcoSpec AI). Hackathon prototype.",
+  "description": "TerraTwin AI 3D — Net-Zero Township Copilot for City of Elmina (SolarTwin + Solar Panels + Canopy Materials). Hackathon prototype.",
   "scripts": {
     "dev": "concurrently -k -n api,web -c cyan,green \"npm:dev:api\" \"npm:dev:web\"",
     "dev:web": "vite",

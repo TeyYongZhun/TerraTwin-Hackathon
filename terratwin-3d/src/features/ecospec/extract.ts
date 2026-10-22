@@ -1,9 +1,9 @@
-/* Client-side extraction pipeline: validate → hash → demo cache or live Claude via the API, 4 at a time. */
+/* Client-side extraction pipeline: validate → hash → demo cache or live Claude via the API, 4 at a time, into the given spec store. */
 import cacheJson from '../../data/ecospec/sample-extractions.json';
 import pack from '../../data/ecospec/sample-pack.json';
 import type { Extraction } from '../../lib/ecospec/schema';
 import { postJSON } from '../../lib/api';
-import { useEco } from '../../store/ecospec';
+import type { SpecStore } from '../../store/ecospec';
 import { useApp } from '../../store/app';
 
 const CACHE = cacheJson as Record<string, { fileName: string; useCaseId: string; source: string; extraction: Extraction }>;
@@ -24,18 +24,25 @@ const pump = () => {
   }
 };
 
-export function addFiles(files: File[], useCaseId: string) {
-  const eco = useEco.getState();
+/** Queue PDFs for extraction, skipping any already loaded for this use case (same name and size), so loading the
+    sample pack twice or re-dropping a file does not list the same product twice. */
+export function addFiles(store: SpecStore, files: File[], useCaseId: string) {
+  const eco = store.getState(), key = (name: string, size: number) => `${name}:${size}`;
+  const have = new Set(eco.docs.filter((d) => d.useCaseId === useCaseId && d.status !== 'error').map((d) => key(d.fileName, d.size)));
+  const skipped: string[] = [];
   for (const f of files) {
+    if (have.has(key(f.name, f.size))) { skipped.push(f.name); continue; }
+    have.add(key(f.name, f.size));
     const id = `${f.name}:${f.size}:${Math.random().toString(36).slice(2, 7)}`;
     eco.upsertDoc({ id, fileName: f.name, size: f.size, useCaseId, status: 'queued' });
-    queue.push(() => runOne(id, f, useCaseId));
+    queue.push(() => runOne(store, id, f, useCaseId));
   }
+  if (skipped.length) useApp.getState().toast(skipped.length === files.length ? 'These documents are already loaded' : `Skipped ${skipped.length} already-loaded document${skipped.length > 1 ? 's' : ''}`, 'info');
   pump();
 }
 
-async function runOne(id: string, file: File, useCaseId: string) {
-  const { upsertDoc, forceLive } = useEco.getState();
+async function runOne(store: SpecStore, id: string, file: File, useCaseId: string) {
+  const { upsertDoc, forceLive } = store.getState();
   upsertDoc({ id, status: 'reading', startedAt: performance.now() });
   try {
     if (file.size > MAX) throw new Error('PDF is larger than 25 MB');
@@ -57,8 +64,8 @@ async function runOne(id: string, file: File, useCaseId: string) {
   }
 }
 
-export async function loadSamplePack(useCaseId: string) {
+export async function loadSamplePack(store: SpecStore, useCaseId: string) {
   const items = SAMPLE_PACK.filter((p) => p.useCaseId === useCaseId);
   const files = await Promise.all(items.map(async (p) => new File([await (await fetch(`/samples/${p.file}`)).blob()], p.file, { type: 'application/pdf' })));
-  addFiles(files, useCaseId);
+  addFiles(store, files, useCaseId);
 }

@@ -1,4 +1,4 @@
-/* EcoSpec AI: PDF → structured extraction (Claude, cached by SHA-256) and the streamed procurement memo. */
+/* Spec modules (Canopy Materials, Solar Panels): PDF → structured extraction (Claude, cached by SHA-256) and the streamed procurement memo. */
 import { createHash } from 'node:crypto';
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';

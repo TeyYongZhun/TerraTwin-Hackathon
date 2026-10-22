@@ -8,7 +8,7 @@ export type CopilotAction =
   | { name: 'set_layers'; input: { heat: boolean | null; shadows: boolean | null; panels: boolean | null; canopies: boolean | null; labels: boolean | null } }
   | { name: 'set_map_style'; input: { style: 'satellite' | 'night' | 'blueprint' } }
   | { name: 'design_canopy'; input: { query: string } }
-  | { name: 'open_module'; input: { module: 'solar' | 'ecospec' | 'dashboard'; use_case: 'concrete-c30' | 'paver-80' | null } }
+  | { name: 'open_module'; input: { module: 'solar' | 'panelspec' | 'ecospec' | 'dashboard'; use_case: 'concrete-c30' | 'paver-80' | null } }
   | { name: 'add_to_portfolio'; input: { query: string } }
   | { name: 'join_cream_pool'; input: { top_n: number } };
 
@@ -36,8 +36,8 @@ export const COPILOT_TOOLS = [
   { name: 'set_map_style', description: 'Switch the map look.', input_schema: obj({ style: { type: 'string', enum: ['satellite', 'night', 'blueprint'] } }) },
   { name: 'design_canopy', description: 'Design a 3D solar carport canopy over a car park (selects it and builds the canopy).', input_schema: obj({ query: { type: 'string', description: 'Car park name from the context list' } }) },
   {
-    name: 'open_module', description: 'Open a module. For EcoSpec AI optionally choose the material use case.',
-    input_schema: obj({ module: { type: 'string', enum: ['solar', 'ecospec', 'dashboard'] }, use_case: nullable({ type: 'string', enum: ['concrete-c30', 'paver-80'] }, 'EcoSpec use case, or null') }),
+    name: 'open_module', description: 'Open a module: "solar" = SolarTwin, "panelspec" = the Solar Panels tab (PV panels), "ecospec" = the Canopy Materials tab (car-park canopy concrete and pavers), "dashboard" = the Net-Zero dashboard. For Canopy Materials optionally choose the material use case.',
+    input_schema: obj({ module: { type: 'string', enum: ['solar', 'panelspec', 'ecospec', 'dashboard'] }, use_case: nullable({ type: 'string', enum: ['concrete-c30', 'paver-80'] }, 'Canopy Materials use case, or null') }),
   },
   { name: 'add_to_portfolio', description: 'Add a site to the Net-Zero portfolio.', input_schema: obj({ query: { type: 'string', description: 'Site name' } }) },
   { name: 'join_cream_pool', description: 'Enrol the top-N ranked landed-home rows into the CREAM rooftop-lease pool.', input_schema: obj({ top_n: { type: 'integer', description: 'How many top-ranked home rows, 1-50' } }) },

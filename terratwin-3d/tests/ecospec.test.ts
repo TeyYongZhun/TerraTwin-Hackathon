@@ -42,6 +42,20 @@ describe('normalisation', () => {
   it('keeps per-m³ concrete GWP as declared', () => {
     expect(normalize(cand('concrete-verdemix-ggbs50.pdf').ex, useCaseById('concrete-c30')).gwp).toBe(182);
   });
+  it('parses PV units, checking kWp before Wp and m²', () => {
+    expect(unitBasis('kgCO2e/kWp')).toBe('kWp');
+    expect(unitBasis('RM/Wp')).toBe('Wp');
+    expect(unitBasis('RM per module')).toBe('module');
+    expect(unitBasis('kgCO2e/m2')).toBe('m2');
+  });
+  it('converts PV carbon and price to per kWp with the document\'s own efficiency and power', () => {
+    const pv = useCaseById('pv-module');
+    const hjt = normalize(cand('pv-heliomax-hjt600.pdf').ex, pv);
+    expect(hjt.gwp).toBeCloseTo(88 / 0.232, 1);
+    expect(hjt.gwpNote).toMatch(/23.2% efficiency/);
+    expect(normalize(cand('pv-solarispeak-topcon580.pdf').ex, pv).price).toBe(510);
+    expect(normalize(cand('pv-everbright-perc550.pdf').ex, pv).price).toBeCloseTo(255 / 0.55, 1);
+  });
 });
 
 describe('evidence & greenwashing', () => {
@@ -90,6 +104,20 @@ describe('gate-then-rank', () => {
     expect(r25.rows.find((r) => r.c.fileName === 'paver-greenstep-eco.pdf')!.gate.find((g) => g.req.key === 'slip_resistance_ptv')!.status).toBe('missing');
     const r15 = rankCandidates(uc, 1000, pack('paver-80'), { premiumCapPct: 15, today: TODAY });
     expect(r15.recommended?.c.fileName).toBe('paver-durablock-classic.pdf');
+  });
+  it('PV modules: lowest verified carbon within the cap wins; the lowest-carbon module fails the gate', () => {
+    const uc = useCaseById('pv-module');
+    const r25 = rankCandidates(uc, 737, pack('pv-module'), { premiumCapPct: 25, today: TODAY });
+    expect(r25.recommended?.c.fileName).toBe('pv-heliomax-hjt600.pdf');
+    const cdte = r25.rows.find((r) => r.c.fileName === 'pv-thincell-cdte545.pdf')!;
+    expect(cdte.norm.gwp).toBeLessThan(r25.recommended!.norm.gwp!);
+    expect(cdte.gate.map((g) => g.status)).toEqual(['fail', 'pass', 'missing']);
+    const perc = r25.rows.find((r) => r.c.fileName === 'pv-everbright-perc550.pdf')!;
+    expect(perc.gatePass).toBe(true);
+    expect(perc.evidence.greenwash.map((g) => g.reason).join(' ')).toMatch(/expired/);
+    expect(perc.eligible).toBe(false);
+    // HJT costs 21.9% more than the baseline, so a 20% cap hands the pick to TOPCon.
+    expect(rankCandidates(uc, 737, pack('pv-module'), { premiumCapPct: 20, today: TODAY }).recommended?.c.fileName).toBe('pv-solarispeak-topcon580.pdf');
   });
   it('eligible candidates are ordered before ineligible ones', () => {
     const { rows } = rankCandidates(useCaseById('paver-80'), 500, pack('paver-80'), { premiumCapPct: 25, today: TODAY });

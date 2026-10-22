@@ -9,13 +9,14 @@ import workerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?url';
 setWorkerUrl(workerUrl);
 import { applyLook, baseStyle } from './style';
 import { mapRef, flyToSite, spinGlobe, stopOrbit } from './camera';
-import { EMPTY, canopyFC, fidOf, labelsFC, outlineFC, panelsFC, shadowsFC, townshipFC } from './sources';
-import { useApp, useAppPick, type MapStyleId } from '../store/app';
+import { type CanopyReveal, EMPTY, canopyFC, fidOf, labelsFC, outlineFC, panelsFC, shadowsFC, townshipFC } from './sources';
+import { type CanopySpec, useApp, useAppPick, type MapStyleId } from '../store/app';
 import { useAnalytics } from '../hooks/useAnalytics';
 import { getSites, type SiteKind } from '../data/sites';
 import { getTownship, CATEGORY_LABEL } from '../data/township';
 import { mytDate, sunPosition } from '../lib/solar/sun';
 import { fmt } from '../lib/solar/evaluate';
+import type { PvSpec } from '../lib/solar/modules';
 
 /** Single-hue amber sequential ramp (monotone lightness, validated against the dark UI surface). */
 export const HEAT_STOPS: [number, string][] = [[0, '#7c3d14'], [0.35, '#a8541a'], [0.65, '#d9741c'], [0.85, '#f5a524'], [1, '#ffd166']];
@@ -52,11 +53,11 @@ function addLayers(map: MLMap) {
   }, before);
   map.addLayer({
     id: 'panels-3d', type: 'fill-extrusion', source: 'panels',
-    paint: { 'fill-extrusion-color': ['match', ['get', 'k'], 'plant', '#94a3b8', '#1e3a8a'], 'fill-extrusion-base': ['get', 'base'], 'fill-extrusion-height': ['get', 'top'], 'fill-extrusion-opacity': 1 },
+    paint: { 'fill-extrusion-color': ['get', 'c'], 'fill-extrusion-base': ['get', 'base'], 'fill-extrusion-height': ['get', 'top'], 'fill-extrusion-opacity': 1 },
   }, before);
   map.addLayer({
     id: 'canopy-3d', type: 'fill-extrusion', source: 'canopy',
-    paint: { 'fill-extrusion-color': ['match', ['get', 'k'], 'column', '#cbd5e1', 'deck', '#f1f5f9', '#1d4ed8'], 'fill-extrusion-base': ['get', 'base'], 'fill-extrusion-height': ['get', 'top'], 'fill-extrusion-opacity': 1 },
+    paint: { 'fill-extrusion-color': ['get', 'c'], 'fill-extrusion-base': ['get', 'base'], 'fill-extrusion-height': ['get', 'top'], 'fill-extrusion-opacity': 1 },
   }, before);
   map.addLayer({ id: 'outline', type: 'line', source: 'outline', paint: { 'line-color': '#22d3ee', 'line-width': 3, 'line-blur': 0.6 } }, before);
   map.addLayer({
@@ -73,10 +74,13 @@ export function MapView() {
   const [ready, setReady] = useState(false);
   const [hover, setHover] = useState<Hover | null>(null);
   const analytics = useAnalytics();
-  const { mapStyle, layers, sun, selectedId, hoverId, portfolio, creamPool, canopies } = useAppPick('mapStyle', 'layers', 'sun', 'selectedId', 'hoverId', 'portfolio', 'creamPool', 'canopies');
+  const { mapStyle, layers, sun, selectedId, hoverId, portfolio, creamPool, canopies, arrays, modules, canopySpecs } = useAppPick('mapStyle', 'layers', 'sun', 'selectedId', 'hoverId', 'portfolio', 'creamPool', 'canopies', 'arrays', 'modules', 'canopySpecs');
   const lastSel = useRef<string | null>(null), lastHover = useRef<string | null>(null);
-  const reveal = useRef<{ id: string; t: number } | null>(null), canopyReveal = useRef<{ id: string; t: number } | null>(null);
-  const prevCanopies = useRef<string[]>([]), sunFrame = useRef(0);
+  const reveal = useRef<{ id: string; t: number } | null>(null), canopyReveal = useRef<CanopyReveal | null>(null);
+  const prevCanopies = useRef<string[]>([]), prevArrays = useRef<string[]>([]), sunFrame = useRef(0);
+  // Module / material choices last drawn by each layer, to spot a (re)build and replay its animation.
+  const drawnPanelModules = useRef<Record<string, PvSpec>>({}), drawnCanopyModules = useRef<Record<string, PvSpec>>({});
+  const drawnCanopySpecs = useRef<Record<string, CanopySpec>>({});
 
   // Create the map once.
   useEffect(() => {
@@ -182,12 +186,20 @@ export function MapView() {
     lastHover.current = hoverId;
   }, [ready, hoverId]);
 
-  // Rooftop / home PV arrays: selection (animated build-out) + portfolio + CREAM pool.
+  // Rooftop / home PV arrays: designed arrays + portfolio + CREAM pool, under the PV panels layer. Selecting a site
+  // does not draw its panels (the building stays as it is until "Design solar array in 3D"); re-selecting a site that
+  // has panels replays their build-out.
   useEffect(() => {
     const map = mapRef.current;
     if (!ready || !map) return;
     const { byId } = getSites();
-    const ids = new Set([...(layers.panels && selectedId ? [selectedId] : []), ...portfolio, ...creamPool]);
+    // Designing an array, or building it with a (new) module, replays its build-out straight away.
+    const rebuilt = arrays.find((id) => !prevArrays.current.includes(id))
+      ?? Object.keys(modules).find((id) => modules[id] !== drawnPanelModules.current[id] && byId.get(id)?.kind !== 'carpark');
+    prevArrays.current = arrays;
+    drawnPanelModules.current = modules;
+    if (rebuilt) reveal.current = { id: rebuilt, t: 0 };
+    const ids = new Set(layers.panels ? [...arrays, ...portfolio, ...creamPool] : []);
     const sites = [...ids].map((id) => byId.get(id)!).filter((s) => s && s.kind !== 'carpark');
     const src = map.getSource('panels') as GeoJSONSource;
     let raf = 0;
@@ -195,35 +207,40 @@ export function MapView() {
     const step = () => {
       const r = reveal.current;
       if (r) r.t = Math.min(1, (performance.now() - t0) / 1400);
-      src.setData(panelsFC(sites, r ?? undefined));
+      src.setData(panelsFC(sites, r ?? undefined, modules));
       if (r && r.t < 1) raf = requestAnimationFrame(step);
     };
     // Let the camera start moving before the array builds out.
-    const timer = window.setTimeout(step, reveal.current && reveal.current.t === 0 ? 900 : 0);
+    const timer = window.setTimeout(step, reveal.current && reveal.current.t === 0 && !rebuilt ? 900 : 0);
     return () => { clearTimeout(timer); cancelAnimationFrame(raf); };
-  }, [ready, selectedId, portfolio, creamPool, layers.panels]);
+  }, [ready, selectedId, arrays, portfolio, creamPool, layers.panels, modules]);
 
-  // Solar carport canopies.
+  // Solar carport canopies. A new canopy, or canopy materials confirmed in the Canopy Materials tab, build the structure out again;
+  // PV panels confirmed in the Solar Panels tab are laid onto the existing deck.
   useEffect(() => {
     const map = mapRef.current;
     if (!ready || !map) return;
-    const added = canopies.find((id) => !prevCanopies.current.includes(id));
+    const structure = canopies.find((id) => !prevCanopies.current.includes(id)) ?? canopies.find((id) => canopySpecs[id] !== drawnCanopySpecs.current[id]);
+    const panels = canopies.find((id) => modules[id] !== drawnCanopyModules.current[id]);
     prevCanopies.current = canopies;
+    drawnCanopyModules.current = modules;
+    drawnCanopySpecs.current = canopySpecs;
     const { byId } = getSites();
     const sites = layers.canopies ? canopies.map((id) => byId.get(id)!).filter(Boolean) : [];
     const src = map.getSource('canopy') as GeoJSONSource;
-    if (!added || !layers.canopies) { src.setData(canopyFC(sites)); return; }
-    canopyReveal.current = { id: added, t: 0 };
-    const t0 = performance.now();
+    const target: CanopyReveal | null = structure ? { id: structure, t: 0, part: 'structure' } : panels ? { id: panels, t: 0, part: 'panels' } : null;
+    if (!target || !layers.canopies) { src.setData(canopyFC(sites, undefined, modules, canopySpecs)); return; }
+    canopyReveal.current = target;
+    const t0 = performance.now(), duration = target.part === 'panels' ? 1400 : 2200;
     let raf = 0;
     const step = () => {
-      canopyReveal.current!.t = Math.min(1, (performance.now() - t0) / 2200);
-      src.setData(canopyFC(sites, canopyReveal.current!));
-      if (canopyReveal.current!.t < 1) raf = requestAnimationFrame(step);
+      target.t = Math.min(1, (performance.now() - t0) / duration);
+      src.setData(canopyFC(sites, target, modules, canopySpecs));
+      if (target.t < 1) raf = requestAnimationFrame(step);
     };
     raf = requestAnimationFrame(step);
     return () => cancelAnimationFrame(raf);
-  }, [ready, canopies, layers.canopies]);
+  }, [ready, canopies, layers.canopies, modules, canopySpecs]);
 
   const h = hover ? analytics.byId.get(hover.sid) : null;
   return (

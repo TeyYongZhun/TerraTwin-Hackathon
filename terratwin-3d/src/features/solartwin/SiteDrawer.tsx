@@ -1,9 +1,9 @@
 /* Right drawer for the selected site: score breakdown, yield, shading, demand match, red flags, finance,
-   car-park canopy design (→ EcoSpec AI), CREAM resident offer and the AI site brief. */
+   car-park canopy (→ Canopy Materials) or PV array design (→ Solar Panels), CREAM resident offer and the AI site brief. */
 import { type ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import {
-  ArrowRight, Building, Car, CircleCheck, ExternalLink, FileText, House, Info, Leaf, LoaderCircle, Plus, Check, Sparkles, Sun, TriangleAlert, Wallet, X, Zap, CloudSun,
+  ArrowRight, Building, Car, CircleCheck, ExternalLink, FileText, House, Info, Leaf, LoaderCircle, Plus, Check, Sparkles, SolarPanel, Sun, TriangleAlert, Wallet, X, Zap, CloudSun,
 } from 'lucide-react';
 import { useApp, useAppPick } from '../../store/app';
 import { useAnalytics } from '../../hooks/useAnalytics';
@@ -11,6 +11,7 @@ import { type Severity, fmt } from '../../lib/solar/evaluate';
 import { type SiteGeometry, siteGeometry } from '../../lib/solar/siteGeometry';
 import { monthlyShading, shadedFraction } from '../../lib/solar/shadingLoss';
 import { mytDate, sunPosition } from '../../lib/solar/sun';
+import { TECH_LABEL, moduleOf } from '../../lib/solar/modules';
 import { Btn, CountUp, Pill, ScoreRing, Section, Stat, cx, rm } from '../../components/ui';
 import { Markdownish } from '../../components/Markdownish';
 import { DemandChart, MonthlyShading, SunPath } from './charts';
@@ -41,7 +42,7 @@ function ShadingSection({ geo, children }: { geo: SiteGeometry; children: ReactN
 }
 
 export function SiteDrawer() {
-  const { selectedId, assumptions: A, portfolio, creamPool, canopies, ai, select, toggleIn, set, toast } = useAppPick('selectedId', 'assumptions', 'portfolio', 'creamPool', 'canopies', 'ai', 'select', 'toggleIn', 'set', 'toast');
+  const { selectedId, assumptions: A, portfolio, creamPool, canopies, arrays, modules, canopySpecs, ai, select, toggleIn, toggleLayer, setModule, set, toast } = useAppPick('selectedId', 'assumptions', 'portfolio', 'creamPool', 'canopies', 'arrays', 'modules', 'canopySpecs', 'ai', 'select', 'toggleIn', 'toggleLayer', 'setModule', 'set', 'toast');
   const a = useAnalytics();
   const r = selectedId ? a.byId.get(selectedId) : undefined;
   const [brief, setBrief] = useState('');
@@ -58,7 +59,9 @@ export function SiteDrawer() {
 
   if (!r || !geo) return null;
   const { site: s, ev } = r;
-  const inPortfolio = portfolio.includes(s.id), inPool = creamPool.includes(s.id), hasCanopy = canopies.includes(s.id);
+  const inPortfolio = portfolio.includes(s.id), inPool = creamPool.includes(s.id), hasCanopy = canopies.includes(s.id), hasArray = arrays.includes(s.id);
+  // The module the site is built with (Solar Panels pick, or the mono PERC baseline) and its Canopy Materials picks.
+  const chosen = modules[s.id], M = moduleOf(chosen), canopySpec = canopySpecs[s.id];
   const KindIcon = s.kind === 'roof' ? Building : s.kind === 'carpark' ? Car : House;
   const osmUrl = `https://www.openstreetmap.org/${s.id}`;
 
@@ -83,10 +86,11 @@ export function SiteDrawer() {
 
   const togglePortfolio = () => { toggleIn('portfolio', s.id); if (!inPortfolio) toast(`${s.name} added to the Net-Zero portfolio`); };
 
-  const toEcoSpec = () => {
-    const q = geo.canopy!.quantities;
-    set({ handoff: { siteId: s.id, siteName: s.name, paverAreaM2: q.paverAreaM2, footingConcreteM3: q.footingConcreteM3, columns: q.columns, steelTonnes: q.steelTonnes }, module: 'ecospec' });
-  };
+  // The spec modules pick up the selected site themselves (quantities, and what is already built on it), exactly as
+  // when they are opened from the top bar.
+  const toEcoSpec = () => set({ module: 'ecospec' });
+  const toPanelSpec = () => set({ module: 'panelspec' });
+  const removeArray = () => { toggleIn('arrays', s.id, false); setModule(s.id, null); };
 
   return (
     <AnimatePresence>
@@ -123,7 +127,7 @@ export function SiteDrawer() {
           </div>
 
           <div className="grid grid-cols-3 gap-2 px-4 pb-3">
-            <Stat label="System" value={<CountUp value={s.kwp} decimals={s.kwp < 100 ? 1 : 0} />} unit="kWp" sub={`${fmt(s.panels)} × 550 W`} />
+            <Stat label="System" value={<CountUp value={s.kwp} decimals={s.kwp < 100 ? 1 : 0} />} unit="kWp" sub={`${fmt(s.panels)} × ${moduleOf(s.module).watt} W`} />
             <Stat label="Usable area" value={<CountUp value={s.usableArea} />} unit="m²" sub={`of ${fmt(s.area)} m²`} />
             <Stat label="Generation" value={<CountUp value={ev.annualKwh / 1000} decimals={ev.annualKwh < 1e5 ? 1 : 0} />} unit="MWh/yr" />
             <Stat label="Shading loss" value={`${(s.shadingLoss * 100).toFixed(1)}%`} sub="annual, modelled" accent={s.shadingLoss >= 0.25 ? 'text-rose-300' : s.shadingLoss >= 0.1 ? 'text-amber-300' : ''} />
@@ -139,7 +143,7 @@ export function SiteDrawer() {
               {!hasCanopy ? (
                 <div className="rounded-xl bg-gradient-to-br from-sky-500/10 to-emerald-500/10 p-3 ring-1 ring-white/10">
                   <p className="text-xs text-slate-300">Generate a double-row carport layout: {geo.canopy!.strips.length} canopy strips, {fmt(geo.canopy!.coveredBays)} covered bays, 3.6 m clearance.</p>
-                  <Btn tone="sky" className="mt-2 w-full" onClick={() => toggleIn('canopies', s.id, true)}><Sparkles size={14} /> Design solar canopy in 3D</Btn>
+                  <Btn tone="sky" className="mt-2 w-full" onClick={() => { toggleLayer('canopies', true); toggleIn('canopies', s.id, true); }}><Sparkles size={14} /> Design solar canopy in 3D</Btn>
                 </div>
               ) : (
                 <div className="space-y-2">
@@ -148,8 +152,41 @@ export function SiteDrawer() {
                       <div key={k} className="glass-soft rounded-lg px-1 py-1.5"><div className="num text-xs font-semibold text-white">{v}</div><div className="text-[9px] text-slate-400">{k}</div></div>
                     ))}
                   </div>
-                  <Btn tone="leaf" className="w-full" onClick={toEcoSpec}><Leaf size={14} /> Spec low-carbon materials in EcoSpec AI <ArrowRight size={14} /></Btn>
+                  <ul className="space-y-0.5 text-[11px] text-slate-400">
+                    <li>Footings: {canopySpec?.concrete ? <b className="text-slate-200">{canopySpec.concrete}</b> : 'not specified yet (Canopy Materials tab)'}</li>
+                    <li>Paving: {canopySpec?.paver ? <b className="text-slate-200">{canopySpec.paver}</b> : 'not specified yet (Canopy Materials tab)'}</li>
+                    <li>PV panels: {chosen ? <><b className="text-slate-200">{fmt(s.panels)} × {chosen.product}</b> = {fmt(s.kwp)} kWp</> : `not chosen yet (Solar Panels tab); about ${fmt(s.kwp)} kWp with mono PERC`}</li>
+                  </ul>
+                  <Btn tone="leaf" className="w-full" onClick={toEcoSpec}><Leaf size={14} /> {canopySpec?.concrete && canopySpec.paver ? 'Change' : 'Choose'} canopy materials <ArrowRight size={14} /></Btn>
+                  <Btn tone="primary" className="w-full" onClick={toPanelSpec}><SolarPanel size={14} /> {chosen ? 'Change' : 'Choose'} solar panels <ArrowRight size={14} /></Btn>
                   <button type="button" className="w-full text-center text-[11px] text-slate-500 hover:text-slate-300" onClick={() => toggleIn('canopies', s.id, false)}>Remove canopy</button>
+                </div>
+              )}
+            </Section>
+          )}
+          {s.kind !== 'carpark' && (
+            <Section title="Solar array design" icon={<SolarPanel size={12} />} right={chosen && <Pill tone="emerald"><Check size={11} /> {TECH_LABEL[chosen.tech]}</Pill>}>
+              {!hasArray ? (
+                <div className="rounded-xl bg-gradient-to-br from-sky-500/10 to-emerald-500/10 p-3 ring-1 ring-white/10">
+                  <p className="text-xs text-slate-300">
+                    Lay out {fmt(s.panels)} modules ({fmt(s.kwp, s.kwp < 100 ? 1 : 0)} kWp) on {s.kind === 'home' ? (s.homes > 1 ? `these ${s.homes} roofs` : 'this roof') : `${fmt(s.usableArea)} m² of usable roof`}, with a 1 m edge setback and maintenance walkways. Then choose the PV panels from supplier documents in the Solar Panels tab.
+                  </p>
+                  <Btn tone="sky" className="mt-2 w-full" onClick={() => { toggleLayer('panels', true); toggleIn('arrays', s.id, true); }}><Sparkles size={14} /> Design solar array in 3D</Btn>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  <div className="grid grid-cols-4 gap-1.5 text-center">
+                    {[[`Modules × ${M.watt} W`, fmt(s.panels)], ['Capacity', `${fmt(s.kwp, s.kwp < 100 ? 1 : 0)} kWp`], ['Array area', `${fmt(s.kwp / M.efficiency)} m²`], ['Embodied', `${fmt((s.kwp * M.gwpPerKwp) / 1000, s.kwp < 20 ? 1 : 0)} tCO₂e`]].map(([k, v]) => (
+                      <div key={k} className="glass-soft rounded-lg px-1 py-1.5"><div className="num text-xs font-semibold text-white">{v}</div><div className="text-[9px] text-slate-400">{k}</div></div>
+                    ))}
+                  </div>
+                  <p className="text-[11px] text-slate-400">
+                    {chosen
+                      ? <>Built with <b className="text-slate-200">{chosen.product}</b> from {chosen.supplier}, picked in the Solar Panels tab: {(chosen.efficiency * 100).toFixed(1)}% efficient, {fmt(chosen.gwpPerKwp)} kgCO₂e/kWp verified.</>
+                      : 'Mono PERC 550 W baseline. The Solar Panels tab reads supplier datasheets and EPDs, rejects greenwashing and picks the lowest verified-carbon panel that meets the spec.'}
+                  </p>
+                  <Btn tone="primary" className="w-full" onClick={toPanelSpec}><SolarPanel size={14} /> {chosen ? 'Change' : 'Choose'} solar panels <ArrowRight size={14} /></Btn>
+                  <button type="button" className="w-full text-center text-[11px] text-slate-500 hover:text-slate-300" onClick={removeArray}>Remove array</button>
                 </div>
               )}
             </Section>

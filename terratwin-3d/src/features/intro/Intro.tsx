@@ -40,8 +40,8 @@ export function Intro({ onDemo }: { onDemo: () => void }) {
                 <p className="mt-1 text-xs text-slate-400">Operational carbon: ranks roofs, car parks &amp; CREAM homes by usable area, shading and demand match.</p>
               </div>
               <div className="glass rounded-2xl p-4">
-                <div className="flex items-center gap-2 text-emerald-300"><Recycle size={18} /><span className="font-semibold">EcoSpec AI</span></div>
-                <p className="mt-1 text-xs text-slate-400">Embodied carbon: reads supplier PDFs, flags greenwashing, shortlists verified low-carbon specs.</p>
+                <div className="flex items-center gap-2 text-emerald-300"><Recycle size={18} /><span className="font-semibold">Solar Panels &amp; Canopy Materials</span></div>
+                <p className="mt-1 text-xs text-slate-400">Embodied carbon: reads supplier PDFs for PV panels and canopy materials, flags greenwashing, shortlists verified low-carbon specs.</p>
               </div>
             </motion.div>
 

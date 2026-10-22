@@ -78,7 +78,7 @@ export interface CanopyDesign {
   strips: XY[][]; panels: XY[][]; columns: XY[][];
   count: number; kwp: number; canopyArea: number; coveredBays: number;
   samplePoints: XY[];
-  /** Material quantities handed to EcoSpec AI. */
+  /** Material quantities handed to the Canopy Materials tab. */
   quantities: { columns: number; footingConcreteM3: number; paverAreaM2: number; steelTonnes: number };
 }
 

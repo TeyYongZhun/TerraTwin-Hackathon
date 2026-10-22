@@ -47,7 +47,7 @@ export function PrintReport() {
       </>)}
 
       {p.picks.length > 0 && (<>
-        <h2 className="mt-5 text-base font-bold">Low-carbon materials (EcoSpec AI)</h2>
+        <h2 className="mt-5 text-base font-bold">Low-carbon panels and materials (Solar Panels, Canopy Materials)</h2>
         <table className="mt-1 w-full border-collapse">
           <thead><tr>{['Use case', 'Product', 'Supplier', 'Quantity', 'tCO₂e', 'Saved', 'Cost', 'Premium'].map((h) => <th key={h} className={th}>{h}</th>)}</tr></thead>
           <tbody>
@@ -69,7 +69,7 @@ export function PrintReport() {
       <ul className="mt-1 list-disc pl-4">
         {SOURCES.map((s) => <li key={s.url}>{s.title}: {s.url}</li>)}
         <li>Building footprints © OpenStreetMap contributors (ODbL); heights estimated from tags or building type. Site engineering attributes are illustrative stand-ins for SDP asset records.</li>
-        <li>Supplier documents in the EcoSpec sample pack are fictitious test data.</li>
+        <li>Supplier documents in the sample packs are fictitious test data.</li>
       </ul>
     </div>
   );

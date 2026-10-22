@@ -1,4 +1,4 @@
-/* Net-Zero dashboard: operational (SolarTwin) + embodied (EcoSpec) carbon, SSR2030 progress and an IFRS S2-style card. */
+/* Net-Zero dashboard: operational (SolarTwin) + embodied (Solar Panels, Canopy Materials) carbon, SSR2030 progress and an IFRS S2-style card. */
 import { motion } from 'motion/react';
 import { Building, Car, Gauge, House, Leaf, Plus, Printer, Recycle, Sun, Trash2, X, Zap } from 'lucide-react';
 import { useAppPick } from '../../store/app';
@@ -26,7 +26,7 @@ export function Dashboard() {
           <div className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-sky-300 to-indigo-500 text-slate-950"><Gauge size={18} /></div>
           <div className="flex-1 leading-tight">
             <h2 className="font-bold text-white">Net-Zero dashboard · City of Elmina</h2>
-            <p className="text-[11px] text-slate-400">Operational carbon (SolarTwin) + embodied carbon (EcoSpec AI) → SSR2030 and IFRS S2-style metrics</p>
+            <p className="text-[11px] text-slate-400">Operational carbon (SolarTwin) + embodied carbon (Solar Panels, Canopy Materials) → SSR2030 and IFRS S2-style metrics</p>
           </div>
           {empty && <Btn tone="primary" onClick={addTop}><Plus size={14} /> Add top 5 sites</Btn>}
           <Btn onClick={() => window.print()} disabled={empty}><Printer size={14} /> Print decision pack</Btn>
@@ -87,7 +87,7 @@ export function Dashboard() {
 
           {empty ? (
             <div className="rounded-2xl border border-dashed border-white/15 p-8 text-center text-sm text-slate-400">
-              Add sites with <b className="text-slate-200">“Add to portfolio”</b> in SolarTwin, enrol homes in the CREAM pool, and confirm materials in EcoSpec AI.
+              Add sites with <b className="text-slate-200">“Add to portfolio”</b> in SolarTwin, enrol homes in the CREAM pool, and confirm panels and materials in the Solar Panels and Canopy Materials tabs.
             </div>
           ) : (
             <div className="grid gap-4 lg:grid-cols-[1fr_1fr]">
@@ -135,7 +135,7 @@ export function Dashboard() {
                         </li>
                       ))}
                     </ul>
-                  ) : <p className="text-[12px] text-slate-400">None yet. Confirm a recommendation in EcoSpec AI.</p>}
+                  ) : <p className="text-[12px] text-slate-400">None yet. Confirm a choice in the Solar Panels or Canopy Materials tab.</p>}
                 </div>
               </div>
             </div>

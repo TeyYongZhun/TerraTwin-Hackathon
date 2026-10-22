@@ -1,7 +1,7 @@
 /* Comparison matrix: one column per product, green / amber / red cells, the evidence quote and page on hover. */
 import { type ReactNode, createContext, useContext, useState } from 'react';
 import { ArrowRight, CircleCheck, CircleX, CircleAlert, ShieldAlert } from 'lucide-react';
-import { useEco } from '../../store/ecospec';
+import { useSpecStore } from '../../store/ecospec';
 import { useRanking } from './useRanking';
 import { Btn, cx } from '../../components/ui';
 
@@ -29,7 +29,7 @@ function Cell({ tone, children, quote, page }: { tone: Tone; children: ReactNode
 }
 
 export function StepCompare() {
-  const { set } = useEco();
+  const { set } = useSpecStore()();
   const { uc, rows } = useRanking();
   const [tip, setTip] = useState<Tip>(null);
   const cols = [...rows].sort((a, b) => a.c.fileName.localeCompare(b.c.fileName));

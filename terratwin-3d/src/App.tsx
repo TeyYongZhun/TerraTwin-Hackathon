@@ -10,7 +10,7 @@ import { SiteList } from './features/solartwin/SiteList';
 import { SiteDrawer } from './features/solartwin/SiteDrawer';
 import { TimeBar } from './features/solartwin/TimeBar';
 import { LayerDock } from './features/solartwin/LayerDock';
-import { EcoSpec } from './features/ecospec/EcoSpec';
+import { EcoSpec, PanelSpec } from './features/ecospec/EcoSpec';
 import { Dashboard } from './features/dashboard/Dashboard';
 import { PrintReport } from './features/dashboard/PrintReport';
 import { Copilot } from './features/copilot/Copilot';
@@ -50,6 +50,7 @@ export default function App() {
                 </div>
               </>
             )}
+            {module === 'panelspec' && <PanelSpec />}
             {module === 'ecospec' && <EcoSpec />}
             {module === 'dashboard' && <Dashboard />}
           </div>
